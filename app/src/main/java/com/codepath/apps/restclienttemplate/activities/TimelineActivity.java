@@ -1,22 +1,24 @@
 package com.codepath.apps.restclienttemplate.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.network.TwitterApp;
-import com.codepath.apps.restclienttemplate.network.TwitterClient;
 import com.codepath.apps.restclienttemplate.adapter.TweetAdapter;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.network.TwitterApp;
+import com.codepath.apps.restclienttemplate.network.TwitterClient;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,19 +61,12 @@ public class TimelineActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                // iterate through the JSON array
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-                        // for each entry, deserialize the JSONObject
-                        // convert each object to a Tweet model
-                        // add that Tweet model to the data source
-                        tweets.add(Tweet.formJSON(response.getJSONObject(i)));
-                        // notify the adapter about the data source changes
-                        tweetAdapter.notifyItemInserted(tweets.size()-1);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+
+                Type tweetType = new TypeToken<ArrayList<Tweet>>(){}.getType();
+                List<Tweet> tweetList = new Gson().fromJson(response.toString(), tweetType);
+                tweets.addAll(tweetList);
+                tweetAdapter.notifyDataSetChanged();
+
             }
 
             @Override

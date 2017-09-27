@@ -70,9 +70,9 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
         }
 
         public void bind(Context context, Tweet tweet) {
-            tvUserName.setText(tweet.user.name);
-            tvBody.setText(tweet.body);
-            Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
+            tvUserName.setText(tweet.getUser().getName());
+            tvBody.setText(tweet.getBody());
+            Glide.with(context).load(tweet.getUser().getProfileImageUrl()).into(ivProfileImage);
         }
     }
 

@@ -46,7 +46,7 @@ The following **bonus** features are implemented:
 The following **additional** features are implemented:
 
 * [x] Used RoundedImageView - Easily round corners or create oval-shaped images with this popular library.
-* [ ] Use Gson
+* [x] Use Gson
 * [ ] Use Retrofit
 * [ ] Use Data Binding 
 
