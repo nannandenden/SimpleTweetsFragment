@@ -49,8 +49,41 @@ public class TimelineActivity extends AppCompatActivity {
         tweetAdapter = new TweetAdapter(this, tweets); // construct the adapter using the data
         // source
         RecyclerView rvTweets = binding.rvTweets;
-        rvTweets.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvTweets.setLayoutManager(linearLayoutManager);
         rvTweets.setAdapter(tweetAdapter);
+        rvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int currentPage, int totalItemCount, RecyclerView recyclerView) {
+
+                int lastPosition = tweets.size()-1;
+                long maxId = tweets.get(lastPosition).getId();
+
+                Log.d(LOG_TAG, "maxId: " + maxId);
+                Log.d(LOG_TAG, "onLoadMore called. currentPage: " + currentPage);
+                JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        Log.d(LOG_TAG, "Success! loading more page");
+                        Type tweetType = new TypeToken<ArrayList<Tweet>>(){}.getType();
+                        List<Tweet> tweetList = new Gson().fromJson(response.toString(), tweetType);
+                        tweets.addAll(tweetList);
+                        tweetAdapter.notifyDataSetChanged();
+
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                        Log.d(LOG_TAG, "onFailure" + errorResponse.toString());
+                        throwable.printStackTrace();
+
+                    }
+
+                };
+                client.getHomeTimeline(handler, (long)tweets.get(lastPosition).getId());
+            }
+        });
     }
 
     private void populateTimeline() {
@@ -74,6 +107,6 @@ public class TimelineActivity extends AppCompatActivity {
                 throwable.printStackTrace();
             }
 
-        });
+        }, 0);
     }
 }
