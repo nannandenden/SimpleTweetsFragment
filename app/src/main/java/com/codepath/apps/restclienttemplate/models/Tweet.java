@@ -1,5 +1,6 @@
 package com.codepath.apps.restclienttemplate.models;
 
+import com.codepath.apps.restclienttemplate.utils.Utils;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -22,7 +23,7 @@ public class Tweet {
     }
 
     public String getCreatedAt() {
-        return createdAt;
+        return Utils.getRelativeTimeAgo(createdAt);
     }
 
     public long getId() {

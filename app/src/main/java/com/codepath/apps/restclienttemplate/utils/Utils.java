@@ -16,7 +16,7 @@ public class Utils {
 
     private static final String LOG_TAG = Utils.class.getSimpleName();
     // get relative time ago
-    public String getRelativeTimeAgo(String rawJsonData) {
+    public static String getRelativeTimeAgo(String rawJsonData) {
         String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
         simpleDateFormat.setLenient(true);

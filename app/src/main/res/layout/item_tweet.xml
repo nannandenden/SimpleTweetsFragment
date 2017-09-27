@@ -37,7 +37,16 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/tvName"
+            android:ellipsize="end"
             android:text='@{"@" + tweet.user.screenName}'/>
+
+        <TextView
+            android:id="@+id/tvTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/tvUserName"
+            android:text='@{" · " + tweet.createdAt}'/>
 
         <TextView
             android:id="@+id/tvBody"
@@ -48,6 +57,7 @@
             android:layout_below="@+id/tvName"
             android:layout_toEndOf="@+id/ivProfileImage"
             android:text='@{tweet.body}'/>
+
 
     </RelativeLayout>
 </layout>
