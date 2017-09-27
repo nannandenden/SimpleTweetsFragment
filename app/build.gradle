@@ -3,13 +3,12 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
-
     defaultConfig {
         applicationId "com.codepath.apps.restclienttemplate"
         minSdkVersion 17
         targetSdkVersion 25
     }
-
+    dataBinding.enabled = true
     // Related to https://github.com/scribejava/scribejava/issues/480
     // Scribe expects Java 7 or this custom Apache library
     lintOptions {
@@ -34,7 +33,7 @@ def dbflow_version = "4.0.3"
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
     // Glide for remote image loading
-    // Android Async Http for sending async network requests
+    // Android Async Http for sending async com.codepath.apps.restclienttemplate.network requests
     // DBFlow for simple persistence with an ORM
     annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
@@ -46,6 +45,8 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:recyclerview-v7:25.3.1'
 
-    compile 'com.jakewharton:butterknife:8.4.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile 'com.makeramen:roundedimageview:2.3.0'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
 }

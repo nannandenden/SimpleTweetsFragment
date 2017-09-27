@@ -1,21 +1,19 @@
 package com.codepath.apps.restclienttemplate.adapter;
 
 import android.content.Context;
+import android.databinding.BindingAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.databinding.ItemTweetBinding;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by nanden on 9/26/17.
@@ -46,7 +44,8 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
         // get data according to the position
         Tweet tweet = tweets.get(position);
         // populate the view according to the data
-        holder.bind(context, tweet);
+        holder.binding.setTweet(tweet);
+        holder.binding.executePendingBindings();
     }
 
     @Override
@@ -58,21 +57,20 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
     // bind the tweet object value with the references
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.ivProfileImage)
-        ImageView ivProfileImage;
-        @BindView(R.id.tvUserName)
-        TextView tvUserName;
-        @BindView(R.id.tvBody) TextView tvBody;
+        final ItemTweetBinding binding;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            binding = ItemTweetBinding.bind(itemView);
+
         }
 
-        public void bind(Context context, Tweet tweet) {
-            tvUserName.setText(tweet.user.name);
-            tvBody.setText(tweet.body);
-            Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
+    }
+
+    public static class BindingAdapterUtils {
+        @BindingAdapter({"bind:imageUrl"})
+        public static void loadImage(ImageView imageView, String url) {
+            Glide.with(imageView.getContext()).load(url).into(imageView);
         }
     }
 

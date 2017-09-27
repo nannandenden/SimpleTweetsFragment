@@ -1,45 +1,43 @@
 package com.codepath.apps.restclienttemplate.activities;
 
-import android.support.v7.app.AppCompatActivity;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.TwitterApp;
-import com.codepath.apps.restclienttemplate.TwitterClient;
 import com.codepath.apps.restclienttemplate.adapter.TweetAdapter;
+import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.network.TwitterApp;
+import com.codepath.apps.restclienttemplate.network.TwitterClient;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 public class TimelineActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = TimelineActivity.class.getSimpleName();
+    private ActivityTimelineBinding binding;
     private TwitterClient client;
     private TweetAdapter tweetAdapter;
     private List<Tweet> tweets;
 
-    @BindView(R.id.rvTweet)
-    RecyclerView rvTweets;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timeline);
-        ButterKnife.bind(this);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_timeline);
 
         setView();
         populateTimeline();
@@ -50,6 +48,7 @@ public class TimelineActivity extends AppCompatActivity {
         tweets = new ArrayList<>(); // init array list and this is data source
         tweetAdapter = new TweetAdapter(this, tweets); // construct the adapter using the data
         // source
+        RecyclerView rvTweets = binding.rvTweets;
         rvTweets.setLayoutManager(new LinearLayoutManager(this));
         rvTweets.setAdapter(tweetAdapter);
     }
@@ -59,19 +58,12 @@ public class TimelineActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                // iterate through the JSON array
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-                        // for each entry, deserialize the JSONObject
-                        // convert each object to a Tweet model
-                        // add that Tweet model to the data source
-                        tweets.add(Tweet.formJSON(response.getJSONObject(i)));
-                        // notify the adapter about the data source changes
-                        tweetAdapter.notifyItemInserted(tweets.size()-1);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+
+                Type tweetType = new TypeToken<ArrayList<Tweet>>(){}.getType();
+                List<Tweet> tweetList = new Gson().fromJson(response.toString(), tweetType);
+                tweets.addAll(tweetList);
+                tweetAdapter.notifyDataSetChanged();
+
             }
 
             @Override
