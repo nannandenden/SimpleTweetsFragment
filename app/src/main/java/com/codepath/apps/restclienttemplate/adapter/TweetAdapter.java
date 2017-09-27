@@ -3,6 +3,7 @@ package com.codepath.apps.restclienttemplate.adapter;
 import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ import java.util.List;
  */
 
 public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
+
+    private static final String LOG_TAG = TweetAdapter.class.getSimpleName();
 
     Context context;
     List<Tweet> tweets;
@@ -43,6 +46,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
     public void onBindViewHolder(ViewHolder holder, int position) {
         // get data according to the position
         Tweet tweet = tweets.get(position);
+        Log.d(LOG_TAG, String.valueOf(tweet.getId()));
         // populate the view according to the data
         holder.binding.setTweet(tweet);
         holder.binding.executePendingBindings();

@@ -1,5 +1,7 @@
 package com.codepath.apps.restclienttemplate.models;
 
+import android.util.Log;
+
 import com.codepath.apps.restclienttemplate.utils.Utils;
 import com.google.gson.annotations.SerializedName;
 
@@ -8,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Tweet {
-
+    private static final String LOG_TAG = Tweet.class.getSimpleName();
     @SerializedName("text")
     public String body;
     @SerializedName("created_at")
