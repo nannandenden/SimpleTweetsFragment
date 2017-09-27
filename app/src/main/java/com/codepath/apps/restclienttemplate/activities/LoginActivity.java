@@ -1,20 +1,23 @@
 package com.codepath.apps.restclienttemplate.activities;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
 import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.databinding.ActivityLoginBinding;
 import com.codepath.apps.restclienttemplate.network.TwitterClient;
 import com.codepath.oauth.OAuthLoginActionBarActivity;
 
 public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
+	private ActivityLoginBinding binding;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_login);
+		binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
 	}
 
 

@@ -1,5 +1,6 @@
 package com.codepath.apps.restclienttemplate.activities;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import android.util.Log;
 
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.adapter.TweetAdapter;
+import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.network.TwitterApp;
 import com.codepath.apps.restclienttemplate.network.TwitterClient;
@@ -22,26 +24,20 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 public class TimelineActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = TimelineActivity.class.getSimpleName();
+    private ActivityTimelineBinding binding;
     private TwitterClient client;
     private TweetAdapter tweetAdapter;
     private List<Tweet> tweets;
 
-    @BindView(R.id.rvTweet)
-    RecyclerView rvTweets;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timeline);
-        ButterKnife.bind(this);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_timeline);
 
         setView();
         populateTimeline();
@@ -52,6 +48,7 @@ public class TimelineActivity extends AppCompatActivity {
         tweets = new ArrayList<>(); // init array list and this is data source
         tweetAdapter = new TweetAdapter(this, tweets); // construct the adapter using the data
         // source
+        RecyclerView rvTweets = binding.rvTweets;
         rvTweets.setLayoutManager(new LinearLayoutManager(this));
         rvTweets.setAdapter(tweetAdapter);
     }

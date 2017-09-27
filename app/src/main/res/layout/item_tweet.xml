@@ -1,46 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_margin="@dimen/layout_margin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="tweet"
+            type="com.codepath.apps.restclienttemplate.models.Tweet"/>
+    </data>
 
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/ivProfileImage"
-        android:layout_height="50dp"
-        android:layout_width="50dp"
-        android:scaleType="fitCenter"
-        app:riv_corner_radius="30dip"
-        app:riv_mutate_background="true"
-        app:srcCompat="@drawable/ic_launcher"/>
+    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_margin="@dimen/layout_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="@dimen/layout_margin"
-        android:layout_toEndOf="@+id/ivProfileImage"
-        android:textColor="@android:color/black"
-        tools:text="Nan Den"/>
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/ivProfileImage"
+            android:layout_height="50dp"
+            android:layout_width="50dp"
+            android:scaleType="fitCenter"
+            app:riv_corner_radius="30dip"
+            app:riv_mutate_background="true"
+            app:imageUrl='@{tweet.user.profileImageUrl}'/>
 
-    <TextView
-        android:id="@+id/tvUserName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/tvName"
-        tools:text="Odennannan"/>
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/layout_margin"
+            android:layout_toEndOf="@+id/ivProfileImage"
+            android:textColor="@android:color/black"
+            android:text='@{tweet.user.name}'/>
 
-    <TextView
-        android:id="@+id/tvBody"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/ivProfileImage"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/tvName"
-        android:layout_toEndOf="@+id/ivProfileImage"
-        tools:text='lecturing at the "analyzing big data with twitter"'/>
+        <TextView
+            android:id="@+id/tvUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/tvName"
+            android:text='@{"@" + tweet.user.screenName}'/>
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/tvBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/ivProfileImage"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/tvName"
+            android:layout_toEndOf="@+id/ivProfileImage"
+            android:text='@{tweet.body}'/>
+
+    </RelativeLayout>
+</layout>
