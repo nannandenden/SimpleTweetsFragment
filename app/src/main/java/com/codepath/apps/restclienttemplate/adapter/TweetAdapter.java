@@ -5,12 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
 
@@ -59,8 +59,8 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ivProfileImage)
-        ImageView ivProfileImage;
-        @BindView(R.id.tvUserName)
+        RoundedImageView ivProfileImage;
+        @BindView(R.id.tvName)
         TextView tvUserName;
         @BindView(R.id.tvBody) TextView tvBody;
 

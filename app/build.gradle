@@ -34,7 +34,7 @@ def dbflow_version = "4.0.3"
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
     // Glide for remote image loading
-    // Android Async Http for sending async network requests
+    // Android Async Http for sending async com.codepath.apps.restclienttemplate.network requests
     // DBFlow for simple persistence with an ORM
     annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
@@ -48,4 +48,5 @@ dependencies {
 
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile 'com.makeramen:roundedimageview:2.3.0'
 }
