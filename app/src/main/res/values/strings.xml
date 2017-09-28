@@ -8,5 +8,6 @@
     <string name="tweet">Tweet</string>
     <string name="cancel">Cancel</string>
     <string name="what_s_happening">What\'s happening?</string>
+    <string name="exceeding_max_text">You are exceeding the maximum length of the text. Maximum length is 140 characters.</string>
 
 </resources>

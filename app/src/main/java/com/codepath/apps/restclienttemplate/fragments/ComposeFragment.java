@@ -4,14 +4,14 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.EditText;
 
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.databinding.FragmentComposeBinding;
@@ -62,6 +62,21 @@ public class ComposeFragment extends DialogFragment implements View.OnClickListe
         binding.etTweet.requestFocus();
         binding.etTweet.setImeOptions(EditorInfo.IME_ACTION_DONE);
         binding.etTweet.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        binding.tilCompose.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence text, int start, int before, int count) {
+                if (text.length() > 140) {
+                    binding.tilCompose.setErrorEnabled(true);
+                    binding.tilCompose.setError(getString(R.string.exceeding_max_text));
+                } else {
+                    binding.tilCompose.setErrorEnabled(false);
+                }
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
     }
 
@@ -70,8 +85,13 @@ public class ComposeFragment extends DialogFragment implements View.OnClickListe
         Log.d(LOG_TAG, "clicked!");
         EditTweetDialogListener listener = (EditTweetDialogListener) getActivity();
         Log.d(LOG_TAG, binding.etTweet.getText().toString());
-        listener.onFinishEditTweet(binding.etTweet.getText().toString());
-        dismiss();
+        if (binding.etTweet.getText().length() <= 140) {
+            listener.onFinishEditTweet(binding.etTweet.getText().toString());
+            dismiss();
+        } else {
+            //TODO exceeding the max character length, maybe add snackbar to prompt the error
+            // message?
+        }
     }
 
 }
