@@ -28,6 +28,10 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
+ext {
+    supportLibVersion= '25.3.1'
+}
+
 def dbflow_version = "4.0.3"
 
 dependencies {
@@ -49,4 +53,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile "com.android.support:design:25.3.1"
 }
