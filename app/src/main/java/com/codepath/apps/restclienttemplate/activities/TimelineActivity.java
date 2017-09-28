@@ -2,14 +2,18 @@ package com.codepath.apps.restclienttemplate.activities;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.adapter.TweetAdapter;
 import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding;
+import com.codepath.apps.restclienttemplate.fragments.ComposeFragment;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.network.TwitterApp;
 import com.codepath.apps.restclienttemplate.network.TwitterClient;
@@ -26,7 +30,8 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends AppCompatActivity implements ComposeFragment
+        .EditTweetDialogListener {
 
     private static final String LOG_TAG = TimelineActivity.class.getSimpleName();
     private ActivityTimelineBinding binding;
@@ -47,6 +52,15 @@ public class TimelineActivity extends AppCompatActivity {
         client = TwitterApp.getRestClient();
         tweets = new ArrayList<>(); // init array list and this is data source
         tweetAdapter = new TweetAdapter(this, tweets); // construct the adapter using the data
+        FloatingActionButton fabTimeline = binding.fabTimeline;
+        fabTimeline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                ComposeFragment composeFragment = ComposeFragment.newInstance();
+                composeFragment.show(fragmentManager, "fragment_compose");
+            }
+        });
         // source
         RecyclerView rvTweets = binding.rvTweets;
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -108,5 +122,30 @@ public class TimelineActivity extends AppCompatActivity {
             }
 
         }, 0);
+    }
+
+    private void postNewTweet(String message) {
+        JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d(LOG_TAG, "JSONObject success: " + response.toString());
+                Tweet tweet = new Gson().fromJson(response.toString(), Tweet.class);
+                tweets.add(tweet);
+                tweetAdapter.notifyItemChanged(tweets.size()-1);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d(LOG_TAG, "JSONObject fail: " + errorResponse.toString());
+
+            }
+        };
+        client.postTweet(handler, message);
+    }
+
+    @Override
+    public void onFinishEditTweet(String input) {
+        Log.d(LOG_TAG, "input: " + input);
+        postNewTweet(input);
     }
 }
