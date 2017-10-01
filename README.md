@@ -15,7 +15,7 @@ The following **required** functionality is completed:
   * [x] User can view more tweets as they scroll with [infinite pagination](http://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView). Number of tweets is unlimited.
     However there are [Twitter Api Rate Limits](https://dev.twitter.com/rest/public/rate-limiting) in place.
 * [x] User can **compose and post a new tweet**
-  * [ ] User can click a “Compose” icon in the Action Bar on the top right => use FAB instead 
+  * [x] User can click a “Compose” icon in the Action Bar on the top right => use FAB instead 
   * [x] User can then enter a new tweet and post this to twitter
   * [x] User is taken back to home timeline with **new tweet visible** in timeline
 
@@ -24,7 +24,7 @@ The following **optional** features are implemented:
 * [x] User can **see a counter with total number of characters left for tweet** on compose tweet page
 * [ ] User can **click a link within a tweet body** on tweet details view. The click will launch the web browser with relevant page opened.
 * [ ] User can **pull down to refresh tweets timeline**
-* [ ] User can **open the twitter app offline and see last loaded tweets**. Persisted in SQLite tweets are refreshed on every application launch. While "live data" is displayed when app can get it from Twitter API, it is also saved for use in offline mode.
+* [x] User can **open the twitter app offline and see last loaded tweets**. Persisted in SQLite tweets are refreshed on every application launch. While "live data" is displayed when app can get it from Twitter API, it is also saved for use in offline mode.
 * [ ] User can tap a tweet to **open a detailed tweet view**
 * [ ] User can **select "reply" from detail view to respond to a tweet**
 
@@ -46,8 +46,8 @@ The following **bonus** features are implemented:
 The following **additional** features are implemented:
 
 * [x] Used RoundedImageView - Easily round corners or create oval-shaped images with this popular library.
-* [x] Use Gson
-* [x] Use Data Binding 
+* [x] Used Gson to deserialize the response JSON
+* [x] Used Data Binding to remove boilerplate for data-driven UI and enable two way binding of data object and view
 
 
 ## Video Walkthrough

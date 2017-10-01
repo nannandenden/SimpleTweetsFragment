@@ -2,6 +2,7 @@ package com.codepath.apps.restclienttemplate.activities;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -9,17 +10,26 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.adapter.TweetAdapter;
 import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding;
 import com.codepath.apps.restclienttemplate.fragments.ComposeFragment;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.network.MyDatabase;
 import com.codepath.apps.restclienttemplate.network.TwitterApp;
 import com.codepath.apps.restclienttemplate.network.TwitterClient;
+import com.codepath.apps.restclienttemplate.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.raizlabs.android.dbflow.config.DatabaseDefinition;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
+import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,7 +53,6 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_timeline);
-
         setView();
         populateTimeline();
     }
@@ -61,7 +70,6 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
                 composeFragment.show(fragmentManager, "fragment_compose");
             }
         });
-        // source
         RecyclerView rvTweets = binding.rvTweets;
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvTweets.setLayoutManager(linearLayoutManager);
@@ -101,27 +109,36 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
     }
 
     private void populateTimeline() {
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-
-                Type tweetType = new TypeToken<ArrayList<Tweet>>(){}.getType();
-                List<Tweet> tweetList = new Gson().fromJson(response.toString(), tweetType);
+        if (!Utils.isNetworkAvailable(this)) {
+            List<Tweet> tweetList = SQLite.select().from(Tweet.class).queryList();
+            if (tweetList.size()==0) {
+                Toast.makeText(this, "No network available!", Toast.LENGTH_LONG).show();
+            } else {
                 tweets.addAll(tweetList);
-                tweetAdapter.notifyDataSetChanged();
-
+                tweetAdapter.notifyItemRangeInserted(0, tweetList.size()-1);
             }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                // twitter will response error with JSONObject
-                Log.d(LOG_TAG, "onFailure: JSONObject: " + errorResponse.toString());
-                // find out what is the error
-                throwable.printStackTrace();
-            }
+        } else {
+            client.getHomeTimeline(new JsonHttpResponseHandler() {
 
-        }, 0);
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    Log.d(LOG_TAG, "JSONObject success: " + response.toString());
+                    Type tweetType = new TypeToken<ArrayList<Tweet>>(){}.getType();
+                    List<Tweet> tweetList = new Gson().fromJson(response.toString(), tweetType);
+                    tweets.addAll(tweetList);
+                    tweetAdapter.notifyItemRangeInserted(0, tweets.size()-1);
+                    saveToDataBase(tweets);
+
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    throwable.printStackTrace();
+                }
+
+            }, 0);
+        }
     }
 
     private void postNewTweet(String message) {
@@ -147,5 +164,42 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
     public void onFinishEditTweet(String input) {
         Log.d(LOG_TAG, "input: " + input);
         postNewTweet(input);
+    }
+
+    private void saveToDataBase(List<Tweet> tweets) {
+
+        DatabaseDefinition database = FlowManager.getDatabase(MyDatabase.class);
+
+        ProcessModelTransaction<Tweet> processModelTransaction = new ProcessModelTransaction
+                .Builder<>(new ProcessModelTransaction.ProcessModel<Tweet>() {
+            @Override
+            public void processModel(Tweet tweet, DatabaseWrapper wrapper) {
+                tweet.save();
+
+            }
+        }).processListener(new ProcessModelTransaction.OnModelProcessListener<Tweet>() {
+            @Override
+            public void onModelProcessed(long current, long total, Tweet modifiedModel) {
+
+            }
+        }).addAll(tweets).build();
+
+        Transaction transaction = database.beginTransactionAsync(processModelTransaction)
+                .success(new Transaction.Success() {
+                    @Override
+                    public void onSuccess(@NonNull Transaction transaction) {
+                        Log.d(LOG_TAG, "transaction success!");
+                    }
+                })
+                .error(new Transaction.Error() {
+                    @Override
+                    public void onError(@NonNull Transaction transaction, @NonNull Throwable error) {
+                        Log.d(LOG_TAG, "transaction error");
+
+                    }
+                })
+                .build();
+        transaction.execute();
+
     }
 }

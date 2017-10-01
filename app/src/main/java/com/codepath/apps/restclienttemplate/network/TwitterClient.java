@@ -48,6 +48,7 @@ public class TwitterClient extends OAuthBaseClient {
 
     // CHANGE THIS
     // DEFINE METHODS for different API endpoints here
+    // since_id for initial loading, then max_id for infinite scroll
     public void getHomeTimeline(AsyncHttpResponseHandler handler, long maxId) {
         String apiUrl = getApiUrl("statuses/home_timeline.json");
         // Can specify query string params directly or through RequestParams.
@@ -57,9 +58,9 @@ public class TwitterClient extends OAuthBaseClient {
 //			params.put("since_id", 1);
         if (maxId == 0) {
             // initial call
-            params.put("max_id", 913114308913106945L);
+            params.put("since_id", 1);
         } else {
-            params.put("max_id", maxId);
+            params.put("max_id", maxId-1);
         }
         Log.d(LOG_TAG, apiUrl + params);
         client.get(apiUrl, params, handler);

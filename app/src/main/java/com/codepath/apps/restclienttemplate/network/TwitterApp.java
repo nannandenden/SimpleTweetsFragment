@@ -3,6 +3,7 @@ package com.codepath.apps.restclienttemplate.network;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.stetho.Stetho;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowLog;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -22,11 +23,16 @@ public class TwitterApp extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-
+		// instantiate DBFlow
+		// by default, DBFlow generates the Generated DatabaseHolder class which instantiated
+		// once by reflection. Only once in memory
 		FlowManager.init(new FlowConfig.Builder(this).build());
+		// add for verbose logging
 		FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
 
 		TwitterApp.context = this;
+
+		Stetho.initializeWithDefaults(this);
 	}
 
 	public static TwitterClient getRestClient() {
