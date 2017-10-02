@@ -13,6 +13,7 @@
                     android:layout_height="wrap_content">
 
         <com.makeramen.roundedimageview.RoundedImageView
+            android:layout_margin="@dimen/iv_margin"
             android:id="@+id/ivProfileImage"
             android:layout_height="50dp"
             android:layout_width="50dp"
@@ -29,6 +30,7 @@
             android:layout_marginRight="@dimen/layout_margin"
             android:layout_toEndOf="@+id/ivProfileImage"
             android:textColor="@android:color/black"
+            android:textStyle="bold"
             android:text='@{tweet.user.name}'/>
 
         <TextView
@@ -46,6 +48,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/tvUserName"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text='@{" · " + tweet.createdAt}'/>
 
         <TextView
@@ -57,7 +61,6 @@
             android:layout_below="@+id/tvName"
             android:layout_toEndOf="@+id/ivProfileImage"
             android:text='@{tweet.body}'/>
-
 
     </RelativeLayout>
 </layout>

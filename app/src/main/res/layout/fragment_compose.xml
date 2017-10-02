@@ -9,6 +9,7 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/tilCompose"
+            android:paddingTop="@dimen/layout_padding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:counterEnabled="true"
@@ -17,7 +18,7 @@
             <EditText
                 android:id="@+id/etTweet"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_above="@+id/btnCancel"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentStart="true"
@@ -38,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:background="@android:color/holo_blue_dark"
+            android:background="@android:color/holo_blue_light"
             android:text="@string/tweet"
             android:textColor="@android:color/white"/>
 
@@ -49,7 +50,7 @@
             android:layout_margin="@dimen/btn_margin"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:background="@android:color/holo_blue_dark"
+            android:background="@android:color/holo_blue_light"
             android:textColor="@android:color/white"
             android:text="@string/cancel"/>
 

@@ -141,29 +141,12 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
         }
     }
 
-    private void postNewTweet(String message) {
-        JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d(LOG_TAG, "JSONObject success: " + response.toString());
-                Tweet tweet = new Gson().fromJson(response.toString(), Tweet.class);
-                tweets.add(tweet);
-                tweetAdapter.notifyItemChanged(tweets.size()-1);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d(LOG_TAG, "JSONObject fail: " + errorResponse.toString());
-
-            }
-        };
-        client.postTweet(handler, message);
-    }
 
     @Override
-    public void onFinishEditTweet(String input) {
-        Log.d(LOG_TAG, "input: " + input);
-        postNewTweet(input);
+    public void onFinishEditTweet(Tweet tweet) {
+        Log.d(LOG_TAG, "input: " + tweet);
+        tweets.add(0, tweet);
+        tweetAdapter.notifyItemInserted(0);
     }
 
     private void saveToDataBase(List<Tweet> tweets) {
