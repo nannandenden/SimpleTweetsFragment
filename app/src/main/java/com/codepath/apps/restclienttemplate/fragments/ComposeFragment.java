@@ -15,6 +15,15 @@ import android.view.inputmethod.EditorInfo;
 
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.databinding.FragmentComposeBinding;
+import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.network.TwitterApp;
+import com.codepath.apps.restclienttemplate.network.TwitterClient;
+import com.google.gson.Gson;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by nanden on 9/27/17.
@@ -24,11 +33,12 @@ public class ComposeFragment extends DialogFragment implements View.OnClickListe
     // define the interface for passing data back to activity
     public interface EditTweetDialogListener {
 
-        void onFinishEditTweet(String input);
+        void onFinishEditTweet(Tweet tweet);
 
     }
     private static final String LOG_TAG = ComposeFragment.class.getSimpleName();
     FragmentComposeBinding binding;
+    private TwitterClient client;
     public ComposeFragment() {
 
     }
@@ -46,6 +56,7 @@ public class ComposeFragment extends DialogFragment implements View.OnClickListe
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_compose, container, false);
+        client = TwitterApp.getRestClient();
         return binding.getRoot();
     }
 
@@ -62,6 +73,8 @@ public class ComposeFragment extends DialogFragment implements View.OnClickListe
         binding.etTweet.requestFocus();
         binding.etTweet.setImeOptions(EditorInfo.IME_ACTION_DONE);
         binding.etTweet.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        int position = binding.etTweet.length();
+        binding.etTweet.setSelection(position);
         binding.tilCompose.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence text, int start, int before, int count) {
@@ -83,14 +96,29 @@ public class ComposeFragment extends DialogFragment implements View.OnClickListe
     @Override
     public void onClick(View v) {
         Log.d(LOG_TAG, "clicked!");
-        EditTweetDialogListener listener = (EditTweetDialogListener) getActivity();
+        final EditTweetDialogListener listener = (EditTweetDialogListener) getActivity();
         Log.d(LOG_TAG, binding.etTweet.getText().toString());
         if (binding.etTweet.getText().length() <= 140) {
-            listener.onFinishEditTweet(binding.etTweet.getText().toString());
+
+            JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    Log.d(LOG_TAG, "JSONObject success: " + response.toString());
+                    Tweet tweet = new Gson().fromJson(response.toString(), Tweet.class);
+                    listener.onFinishEditTweet(tweet);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    Log.d(LOG_TAG, "JSONObject fail: " + errorResponse.toString());
+
+                }
+            };
+            client.postTweet(handler, binding.etTweet.getText().toString());
             dismiss();
         } else {
-            //TODO exceeding the max character length, maybe add snackbar to prompt the error
-            // message?
+            Log.d(LOG_TAG, "exceeding the mex characters");
+            // potentially I can add snackbar here
         }
     }
 
