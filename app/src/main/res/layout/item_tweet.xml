@@ -4,7 +4,7 @@
     <data>
         <variable
             name="tweet"
-            type="com.codepath.apps.restclienttemplate.models.Tweet"/>
+            type="com.codepath.apps.simpletweetsfragment.models.Tweet"/>
     </data>
 
     <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"

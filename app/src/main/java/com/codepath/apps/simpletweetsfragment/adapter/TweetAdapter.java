@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate.adapter;
+package com.codepath.apps.simpletweetsfragment.adapter;
 
 import android.content.Context;
 import android.databinding.BindingAdapter;
@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.databinding.ItemTweetBinding;
-import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.simpletweetsfragment.R;
+import com.codepath.apps.simpletweetsfragment.databinding.ItemTweetBinding;
+import com.codepath.apps.simpletweetsfragment.models.Tweet;
 
 import java.util.List;
 

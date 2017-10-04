@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate.fragments;
+package com.codepath.apps.simpletweetsfragment.fragments;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -13,11 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
-import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.databinding.FragmentComposeBinding;
-import com.codepath.apps.restclienttemplate.models.Tweet;
-import com.codepath.apps.restclienttemplate.network.TwitterApp;
-import com.codepath.apps.restclienttemplate.network.TwitterClient;
+import com.codepath.apps.simpletweetsfragment.R;
+import com.codepath.apps.simpletweetsfragment.databinding.FragmentComposeBinding;
+import com.codepath.apps.simpletweetsfragment.models.Tweet;
+import com.codepath.apps.simpletweetsfragment.network.TwitterApp;
+import com.codepath.apps.simpletweetsfragment.network.TwitterClient;
 import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 

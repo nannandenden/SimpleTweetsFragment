@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate.activities;
+package com.codepath.apps.simpletweetsfragment.activities;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
-import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.databinding.ActivityLoginBinding;
-import com.codepath.apps.restclienttemplate.network.TwitterClient;
+import com.codepath.apps.simpletweetsfragment.R;
+import com.codepath.apps.simpletweetsfragment.databinding.ActivityLoginBinding;
+import com.codepath.apps.simpletweetsfragment.network.TwitterClient;
 import com.codepath.oauth.OAuthLoginActionBarActivity;
 
 public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {

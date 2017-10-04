@@ -1,7 +1,7 @@
-package com.codepath.apps.restclienttemplate.models;
+package com.codepath.apps.simpletweetsfragment.models;
 
-import com.codepath.apps.restclienttemplate.network.MyDatabase;
-import com.codepath.apps.restclienttemplate.utils.Utils;
+import com.codepath.apps.simpletweetsfragment.network.MyDatabase;
+import com.codepath.apps.simpletweetsfragment.utils.Utils;
 import com.google.gson.annotations.SerializedName;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;

@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate.activities;
+package com.codepath.apps.simpletweetsfragment.activities;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -12,15 +12,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.adapter.TweetAdapter;
-import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding;
-import com.codepath.apps.restclienttemplate.fragments.ComposeFragment;
-import com.codepath.apps.restclienttemplate.models.Tweet;
-import com.codepath.apps.restclienttemplate.network.MyDatabase;
-import com.codepath.apps.restclienttemplate.network.TwitterApp;
-import com.codepath.apps.restclienttemplate.network.TwitterClient;
-import com.codepath.apps.restclienttemplate.utils.Utils;
+import com.codepath.apps.simpletweetsfragment.R;
+import com.codepath.apps.simpletweetsfragment.adapter.TweetAdapter;
+import com.codepath.apps.simpletweetsfragment.databinding.ActivityTimelineBinding;
+import com.codepath.apps.simpletweetsfragment.fragments.ComposeFragment;
+import com.codepath.apps.simpletweetsfragment.models.Tweet;
+import com.codepath.apps.simpletweetsfragment.network.MyDatabase;
+import com.codepath.apps.simpletweetsfragment.network.TwitterApp;
+import com.codepath.apps.simpletweetsfragment.network.TwitterClient;
+import com.codepath.apps.simpletweetsfragment.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;

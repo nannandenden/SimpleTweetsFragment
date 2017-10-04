@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate.network;
+package com.codepath.apps.simpletweetsfragment.network;
 
 import com.raizlabs.android.dbflow.annotation.Database;
 // @Database annotation generates a DatabaseDefinition which now references your SQLite Database

@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate.utils;
+package com.codepath.apps.simpletweetsfragment.utils;
 
 
 import android.content.Context;
