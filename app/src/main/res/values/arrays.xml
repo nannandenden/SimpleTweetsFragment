@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="fragment_name">
+        <item>Home</item>
+        <item>Mention</item>
+    </string-array>
+</resources>

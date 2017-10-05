@@ -1,15 +1,12 @@
 package com.codepath.apps.simpletweetsfragment.adapter;
 
 import android.content.Context;
-import android.databinding.BindingAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.codepath.apps.simpletweetsfragment.R;
 import com.codepath.apps.simpletweetsfragment.databinding.ItemTweetBinding;
 import com.codepath.apps.simpletweetsfragment.models.Tweet;
@@ -22,15 +19,21 @@ import java.util.List;
 
 public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
 
-    private static final String LOG_TAG = TweetAdapter.class.getSimpleName();
+    // for setup the listener to pass back to the fragment
+    public interface OnProfileImageClickListener {
+        void onImageClick(View view, int position);
+    }
+    private OnProfileImageClickListener listener;
 
-    Context context;
-    List<Tweet> tweets;
+    private static final String LOG_TAG = TweetAdapter.class.getSimpleName();
+    private Context context;
+    private List<Tweet> tweets;
 
     // pass in the Tweets array in the constructor to use it
-    public TweetAdapter(Context context, List<Tweet> tweets) {
+    public TweetAdapter(Context context, List<Tweet> tweets, OnProfileImageClickListener listener) {
         this.context = context;
         this.tweets = tweets;
+        this.listener = listener;
     }
 
     @Override
@@ -47,20 +50,18 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
         // get data according to the position
         Tweet tweet = tweets.get(position);
         Log.d(LOG_TAG, String.valueOf(tweet.getId()));
-        // populate the view according to the data
-        holder.binding.setTweet(tweet);
-        holder.binding.executePendingBindings();
+        holder.bind(tweets.get(position));
     }
 
     @Override
     public int getItemCount() {
         return tweets.size();
-
     }
 
     // bind the tweet object value with the references
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    // normally we use static for viewholder class to avoid memory leak
+    // define as non-static object since we need to access listener event
+    public class ViewHolder extends RecyclerView.ViewHolder {
         final ItemTweetBinding binding;
 
         public ViewHolder(View itemView) {
@@ -69,12 +70,16 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
 
         }
 
-    }
-
-    public static class BindingAdapterUtils {
-        @BindingAdapter({"bind:imageUrl"})
-        public static void loadImage(ImageView imageView, String url) {
-            Glide.with(imageView.getContext()).load(url).into(imageView);
+        public void bind(Tweet tweet) {
+            binding.ivProfileImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onImageClick(v, getAdapterPosition());
+                }
+            });
+            // populate the view according to the data
+            binding.setTweet(tweet);
+            binding.executePendingBindings();
         }
     }
 

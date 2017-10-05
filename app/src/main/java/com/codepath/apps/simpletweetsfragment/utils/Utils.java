@@ -2,10 +2,14 @@ package com.codepath.apps.simpletweetsfragment.utils;
 
 
 import android.content.Context;
+import android.databinding.BindingAdapter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -45,5 +49,12 @@ public class Utils {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
+    }
+
+    public static class BindingAdapterUtils {
+        @BindingAdapter({"bind:imageUrl"})
+        public static void loadImage(ImageView imageView, String url) {
+            Glide.with(imageView.getContext()).load(url).into(imageView);
+        }
     }
 }

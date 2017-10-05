@@ -7,9 +7,12 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import org.parceler.Parcel;
+
 /**
  * Created by nanden on 9/26/17.
  */
+@Parcel
 @Table(database = MyDatabase.class)
 public class User extends BaseModel {
 
@@ -30,6 +33,18 @@ public class User extends BaseModel {
     @SerializedName("profile_image_url")
     public String profileImageUrl;
 
+    @Column
+    @SerializedName("description")
+    public String tagLine;
+
+    @Column
+    @SerializedName("followers_count")
+    public int followers;
+
+    @Column
+    @SerializedName("friends_count")
+    public int following;
+
     public User() {
         // empty constructor needed for parcel
     }
@@ -48,6 +63,18 @@ public class User extends BaseModel {
 
     public long getUid() {
         return uid;
+    }
+
+    public String getTagLine() {
+        return tagLine;
+    }
+
+    public int getFollowers() {
+        return followers;
+    }
+
+    public int getFollowing() {
+        return following;
     }
 
     public void setUid(long uid) {
