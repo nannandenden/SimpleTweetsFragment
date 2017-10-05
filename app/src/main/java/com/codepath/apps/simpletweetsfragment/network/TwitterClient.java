@@ -8,6 +8,7 @@ import com.codepath.oauth.OAuthBaseClient;
 import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 /*
@@ -80,5 +81,31 @@ public class TwitterClient extends OAuthBaseClient {
         params.put("status", message);
         client.post(apiUrl, params, handler);
 
+    }
+
+    public void getMentionTimeline(JsonHttpResponseHandler handler, int maxId) {
+        String apiUrl = getApiUrl("statuses/mentions_timeline.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("count", "25");
+        Log.d(LOG_TAG, apiUrl + params);
+        client.get(apiUrl, params, handler);
+    }
+
+    public void getUserTimeline(JsonHttpResponseHandler handler, String screenName) {
+        String apiUrl = getApiUrl("statuses/user_timeline.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("count", "25");
+        // if the screen_name is null, it automatically gets current user's timeline
+        params.put("screen_name", screenName);
+        Log.d(LOG_TAG, apiUrl + params);
+        client.get(apiUrl, params, handler);
+    }
+
+    public void getUserInfo(JsonHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("account/verify_credentials.json");
+        // Can specify query string params directly or through RequestParams.
+        client.get(apiUrl, null, handler);
     }
 }

@@ -1,68 +1,62 @@
 package com.codepath.apps.simpletweetsfragment.activities;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.codepath.apps.simpletweetsfragment.R;
-import com.codepath.apps.simpletweetsfragment.adapter.TweetAdapter;
 import com.codepath.apps.simpletweetsfragment.databinding.ActivityTimelineBinding;
 import com.codepath.apps.simpletweetsfragment.fragments.ComposeFragment;
+import com.codepath.apps.simpletweetsfragment.fragments.TweetsListFragment;
+import com.codepath.apps.simpletweetsfragment.fragments.TweetsPagerAdapter;
 import com.codepath.apps.simpletweetsfragment.models.Tweet;
+import com.codepath.apps.simpletweetsfragment.models.User;
 import com.codepath.apps.simpletweetsfragment.network.MyDatabase;
-import com.codepath.apps.simpletweetsfragment.network.TwitterApp;
-import com.codepath.apps.simpletweetsfragment.network.TwitterClient;
-import com.codepath.apps.simpletweetsfragment.utils.Utils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.raizlabs.android.dbflow.config.DatabaseDefinition;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.parceler.Parcels;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
-import cz.msebera.android.httpclient.Header;
-
 public class TimelineActivity extends AppCompatActivity implements ComposeFragment
-        .EditTweetDialogListener {
+        .EditTweetDialogListener, TweetsListFragment.OnTweetSelectedListener {
 
     private static final String LOG_TAG = TimelineActivity.class.getSimpleName();
     private ActivityTimelineBinding binding;
-    private TwitterClient client;
-    private TweetAdapter tweetAdapter;
-    private List<Tweet> tweets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_timeline);
         setView();
-        populateTimeline();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_timeline, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
     private void setView() {
-        client = TwitterApp.getRestClient();
-        tweets = new ArrayList<>(); // init array list and this is data source
-        tweetAdapter = new TweetAdapter(this, tweets); // construct the adapter using the data
-        FloatingActionButton fabTimeline = binding.fabTimeline;
-        fabTimeline.setOnClickListener(new View.OnClickListener() {
+        // get the view pager
+        setSupportActionBar(binding.toolbar);
+        binding.viewPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager(),this));
+        binding.slidingTab.setupWithViewPager(binding.viewPager);
+        // set the adapter for the pager
+        // setup the tablayout to use the view pager
+        binding.fabTimeline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
@@ -70,83 +64,16 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
                 composeFragment.show(fragmentManager, "fragment_compose");
             }
         });
-        RecyclerView rvTweets = binding.rvTweets;
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        rvTweets.setLayoutManager(linearLayoutManager);
-        rvTweets.setAdapter(tweetAdapter);
-        rvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
-            @Override
-            public void onLoadMore(int currentPage, int totalItemCount, RecyclerView recyclerView) {
-
-                int lastPosition = tweets.size()-1;
-                long maxId = tweets.get(lastPosition).getId();
-
-                Log.d(LOG_TAG, "maxId: " + maxId);
-                Log.d(LOG_TAG, "onLoadMore called. currentPage: " + currentPage);
-                JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
-
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                        Log.d(LOG_TAG, "Success! loading more page");
-                        Type tweetType = new TypeToken<ArrayList<Tweet>>(){}.getType();
-                        List<Tweet> tweetList = new Gson().fromJson(response.toString(), tweetType);
-                        tweets.addAll(tweetList);
-                        tweetAdapter.notifyDataSetChanged();
-
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                        Log.d(LOG_TAG, "onFailure" + errorResponse.toString());
-                        throwable.printStackTrace();
-
-                    }
-
-                };
-                client.getHomeTimeline(handler, (long)tweets.get(lastPosition).getId());
-            }
-        });
     }
 
-    private void populateTimeline() {
-        if (!Utils.isNetworkAvailable(this)) {
-            List<Tweet> tweetList = SQLite.select().from(Tweet.class).queryList();
-            if (tweetList.size()==0) {
-                Toast.makeText(this, "No network available!", Toast.LENGTH_LONG).show();
-            } else {
-                tweets.addAll(tweetList);
-                tweetAdapter.notifyItemRangeInserted(0, tweetList.size()-1);
-            }
-
-        } else {
-            client.getHomeTimeline(new JsonHttpResponseHandler() {
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    Log.d(LOG_TAG, "JSONObject success: " + response.toString());
-                    Type tweetType = new TypeToken<ArrayList<Tweet>>(){}.getType();
-                    List<Tweet> tweetList = new Gson().fromJson(response.toString(), tweetType);
-                    tweets.addAll(tweetList);
-                    tweetAdapter.notifyItemRangeInserted(0, tweets.size()-1);
-                    saveToDataBase(tweets);
-
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    throwable.printStackTrace();
-                }
-
-            }, 0);
-        }
-    }
 
 
     @Override
     public void onFinishEditTweet(Tweet tweet) {
         Log.d(LOG_TAG, "input: " + tweet);
-        tweets.add(0, tweet);
-        tweetAdapter.notifyItemInserted(0);
+        // let's worry about this later
+//        tweets.add(0, tweet);
+//        tweetAdapter.notifyItemInserted(0);
     }
 
     private void saveToDataBase(List<Tweet> tweets) {
@@ -184,5 +111,24 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
                 .build();
         transaction.execute();
 
+    }
+    // profile icon on the action bar was clicked
+    public void onProfileView(MenuItem item) {
+        displayProfileInfo(null);
+    }
+
+    // profile image was clicked
+    @Override
+    public void onTweetClick(User user) {
+        Log.d(LOG_TAG, "user: " + user.toString());
+        displayProfileInfo(user);
+    }
+
+    private void displayProfileInfo(User user) {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        if (user != null) {
+            intent.putExtra("user", Parcels.wrap(user));
+        }
+        startActivity(intent);
     }
 }

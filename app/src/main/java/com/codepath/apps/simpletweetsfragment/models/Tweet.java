@@ -9,9 +9,12 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import org.parceler.Parcel;
+
 /**
  * Created by nanden on 9/26/17.
  */
+@Parcel
 @Table(database = MyDatabase.class)
 public class Tweet extends BaseModel {
     private static final String LOG_TAG = Tweet.class.getSimpleName();

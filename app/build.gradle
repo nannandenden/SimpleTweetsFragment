@@ -29,7 +29,7 @@ repositories {
 }
 
 ext {
-    supportLibVersion= '25.3.1'
+    supportLibVersion = '25.3.1'
 }
 
 def dbflow_version = "4.0.3"
@@ -42,20 +42,20 @@ dependencies {
     annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
+
     compile 'com.codepath.libraries:android-oauth-handler:1.2.5'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.github.bumptech.glide:glide:3.8.0'
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:recyclerview-v7:25.3.1'
-
     compile 'com.makeramen:roundedimageview:2.3.0'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile "com.android.support:design:25.3.1"
+    compile 'com.android.support:design:25.3.1'
     compile 'org.parceler:parceler-api:1.1.6'
-    annotationProcessor 'org.parceler:parceler:1.1.6'
     compile 'com.facebook.stetho:stetho:1.4.1'
     compile 'com.facebook.stetho:stetho-okhttp3:1.4.1'
+    annotationProcessor 'org.parceler:parceler:1.1.6'
 }
