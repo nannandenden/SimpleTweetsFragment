@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.codepath.apps.simpletweetsfragment.R;
 import com.codepath.apps.simpletweetsfragment.activities.EndlessRecyclerViewScrollListener;
@@ -46,6 +47,7 @@ public abstract class TweetsListFragment extends Fragment implements TweetAdapte
     private TweetAdapter tweetAdapter;
     private List<Tweet> tweets;
     private RecyclerView rvTweets;
+    private ProgressBar progressBar;
 
     // inflation happens inside onCreateview
     @Nullable
@@ -53,16 +55,23 @@ public abstract class TweetsListFragment extends Fragment implements TweetAdapte
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragments_tweets_list, container,
                 false);
-        setView();
         return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setView();
     }
 
     private void setView() {
 
         tweets = new ArrayList<>(); // init array list and this is data source
         tweetAdapter = new TweetAdapter(getContext(), tweets, this); // construct the adapter using
-        // the data
+        // data binding
         rvTweets = binding.rvTweets;
+        progressBar = binding.progressBar;
+        // set up recyclerview behavior
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvTweets.setLayoutManager(linearLayoutManager);
         rvTweets.setAdapter(tweetAdapter);
@@ -97,8 +106,6 @@ public abstract class TweetsListFragment extends Fragment implements TweetAdapte
             List<Tweet> tweetList = new Gson().fromJson(response.toString(), tweetType);
             addList(tweetList);
         }
-
-
     }
 
     public void addList(List<Tweet> list) {
@@ -116,6 +123,14 @@ public abstract class TweetsListFragment extends Fragment implements TweetAdapte
         rvTweets.scrollToPosition(0);
     }
 
+    public void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
+    }
+
     // fire the event to pass the screenName to the activity when the user selects the profile
     // picture
     @Override
@@ -127,4 +142,5 @@ public abstract class TweetsListFragment extends Fragment implements TweetAdapte
     }
 
     public abstract void loadMorePage(long maxId);
+
 }
