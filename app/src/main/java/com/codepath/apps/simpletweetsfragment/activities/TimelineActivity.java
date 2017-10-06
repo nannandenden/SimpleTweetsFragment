@@ -82,7 +82,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
         HomeTimelineFragment fragment = (HomeTimelineFragment) pagerAdapter.getRegisteredFragment
                 (0);
         // directory calling the fragment method to add a new tweet
-        fragment.addNewTweet(tweet);
+        fragment.addOneTweet(tweet);
     }
 
     private void saveToDataBase(List<Tweet> tweets) {

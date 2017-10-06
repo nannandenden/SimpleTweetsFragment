@@ -83,22 +83,34 @@ public class TwitterClient extends OAuthBaseClient {
 
     }
 
-    public void getMentionTimeline(JsonHttpResponseHandler handler, int maxId) {
+    public void getMentionTimeline(JsonHttpResponseHandler handler, long maxId) {
         String apiUrl = getApiUrl("statuses/mentions_timeline.json");
         // Can specify query string params directly or through RequestParams.
         RequestParams params = new RequestParams();
         params.put("count", "25");
+        if (maxId == 0) {
+            // initial call
+            params.put("since_id", 1);
+        } else {
+            params.put("max_id", maxId);
+        }
         Log.d(LOG_TAG, apiUrl + params);
         client.get(apiUrl, params, handler);
     }
 
-    public void getUserTimeline(JsonHttpResponseHandler handler, String screenName) {
+    public void getUserTimeline(JsonHttpResponseHandler handler, String screenName, long maxId) {
         String apiUrl = getApiUrl("statuses/user_timeline.json");
         // Can specify query string params directly or through RequestParams.
         RequestParams params = new RequestParams();
         params.put("count", "25");
         // if the screen_name is null, it automatically gets current user's timeline
         params.put("screen_name", screenName);
+        if (maxId == 0) {
+            // initial call
+            params.put("since_id", 1);
+        } else {
+            params.put("max_id", maxId);
+        }
         Log.d(LOG_TAG, apiUrl + params);
         client.get(apiUrl, params, handler);
     }

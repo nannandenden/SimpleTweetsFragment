@@ -24,6 +24,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class HomeTimelineFragment extends TweetsListFragment {
 
+    private static final String LOG_TAG = HomeTimelineFragment.class.getSimpleName();
     private TwitterClient client;
 
     @Override
@@ -31,10 +32,10 @@ public class HomeTimelineFragment extends TweetsListFragment {
         super.onCreate(savedInstanceState);
         // instantiate network call client
         client = TwitterApp.getRestClient();
-        populateTimeline();
+        populateTimeline(0);
     }
 
-    private void populateTimeline() {
+    private void populateTimeline(long maxId) {
         if (!Utils.isNetworkAvailable(getContext())) {
             List<Tweet> tweetList = SQLite.select().from(Tweet.class).queryList();
             if (tweetList.size()==0) {
@@ -46,21 +47,21 @@ public class HomeTimelineFragment extends TweetsListFragment {
 
         } else {
             client.getHomeTimeline(new JsonHttpResponseHandler() {
-
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                     addList(response);
-
 //                    saveToDataBase(tweets);
-
                 }
-
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                     throwable.printStackTrace();
                 }
-
-            }, 0);
+            }, maxId);
         }
+    }
+
+    @Override
+    public void loadMorePage(long maxId) {
+        populateTimeline(maxId);
     }
 }

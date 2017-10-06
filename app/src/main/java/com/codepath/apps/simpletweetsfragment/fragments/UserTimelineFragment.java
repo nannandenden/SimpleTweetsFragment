@@ -27,6 +27,7 @@ public class UserTimelineFragment extends TweetsListFragment {
 
     private static final String LOG_TAG = UserTimelineFragment.class.getSimpleName();
     private TwitterClient client;
+    private String screenName;
 
     public static UserTimelineFragment newInstance(String screenName) {
         UserTimelineFragment fragment = new UserTimelineFragment();
@@ -41,11 +42,11 @@ public class UserTimelineFragment extends TweetsListFragment {
         super.onCreate(savedInstanceState);
         // instantiate network call client
         client = TwitterApp.getRestClient();
-        String screenName = getArguments().getString("screen_name");
-        populateTimeline(screenName);
+        screenName = getArguments().getString("screen_name");
+        populateTimeline(screenName, 0);
     }
 
-    private void populateTimeline(String screenName) {
+    private void populateTimeline(String screenName, long maxId) {
         if (!Utils.isNetworkAvailable(getContext())) {
             List<Tweet> tweetList = SQLite.select().from(Tweet.class).queryList();
             if (tweetList.size()==0) {
@@ -57,22 +58,25 @@ public class UserTimelineFragment extends TweetsListFragment {
 
         } else {
             client.getUserTimeline(new JsonHttpResponseHandler() {
-
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    Log.d(LOG_TAG, "success!");
+                    Log.d(LOG_TAG, "success!: " + response.toString());
                     addList(response);
 
 //                    saveToDataBase(tweets);
 
                 }
-
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                     throwable.printStackTrace();
                 }
 
-            }, screenName);
+            }, screenName, maxId);
         }
+    }
+
+    @Override
+    public void loadMorePage(long maxId) {
+        populateTimeline(screenName, maxId);
     }
 }
