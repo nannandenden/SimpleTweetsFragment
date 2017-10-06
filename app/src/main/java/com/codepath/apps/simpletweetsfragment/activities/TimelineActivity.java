@@ -12,10 +12,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.codepath.apps.simpletweetsfragment.R;
+import com.codepath.apps.simpletweetsfragment.adapter.TweetsPagerAdapter;
 import com.codepath.apps.simpletweetsfragment.databinding.ActivityTimelineBinding;
 import com.codepath.apps.simpletweetsfragment.fragments.ComposeFragment;
+import com.codepath.apps.simpletweetsfragment.fragments.HomeTimelineFragment;
 import com.codepath.apps.simpletweetsfragment.fragments.TweetsListFragment;
-import com.codepath.apps.simpletweetsfragment.fragments.TweetsPagerAdapter;
 import com.codepath.apps.simpletweetsfragment.models.Tweet;
 import com.codepath.apps.simpletweetsfragment.models.User;
 import com.codepath.apps.simpletweetsfragment.network.MyDatabase;
@@ -34,6 +35,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
 
     private static final String LOG_TAG = TimelineActivity.class.getSimpleName();
     private ActivityTimelineBinding binding;
+    private TweetsPagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +54,15 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
     private void setView() {
         // get the view pager
         setSupportActionBar(binding.toolbar);
-        binding.viewPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager(),this));
-        binding.slidingTab.setupWithViewPager(binding.viewPager);
+        // attaching the viewpager to the tweetspageradapter
+        pagerAdapter = new TweetsPagerAdapter(getSupportFragmentManager(), this);
+        binding.viewPager.setAdapter(pagerAdapter);
+        // set the viewpager on the tablayout to connect the pager with the tabs
+        binding.tabLayout.setupWithViewPager(binding.viewPager);
         // set the adapter for the pager
         // setup the tablayout to use the view pager
+        // tablayout is a bar that goes under the action bar. You can define style or add custom
+        // view to the tablayout
         binding.fabTimeline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,13 +74,15 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
     }
 
 
-
+    // for adding the new tweet
     @Override
     public void onFinishEditTweet(Tweet tweet) {
         Log.d(LOG_TAG, "input: " + tweet);
-        // let's worry about this later
-//        tweets.add(0, tweet);
-//        tweetAdapter.notifyItemInserted(0);
+        // get the instance of the HomeTimelineFragment
+        HomeTimelineFragment fragment = (HomeTimelineFragment) pagerAdapter.getRegisteredFragment
+                (0);
+        // directory calling the fragment method to add a new tweet
+        fragment.addNewTweet(tweet);
     }
 
     private void saveToDataBase(List<Tweet> tweets) {

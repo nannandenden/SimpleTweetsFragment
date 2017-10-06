@@ -125,6 +125,12 @@ public class TweetsListFragment extends Fragment implements TweetAdapter.OnProfi
         tweetAdapter.notifyItemRangeInserted(0, tweets.size()-1);
     }
 
+    public void addNewTweet(Tweet tweet) {
+        tweets.add(0, tweet);
+        tweetAdapter.notifyItemInserted(0);
+        rvTweets.scrollToPosition(0);
+    }
+
     // fire the event to pass the screenName to the activity when the user selects the profile
     // picture
     @Override

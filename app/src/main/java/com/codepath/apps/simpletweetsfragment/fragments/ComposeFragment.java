@@ -8,10 +8,12 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import com.codepath.apps.simpletweetsfragment.R;
 import com.codepath.apps.simpletweetsfragment.databinding.FragmentComposeBinding;
@@ -29,20 +31,20 @@ import cz.msebera.android.httpclient.Header;
  * Created by nanden on 9/27/17.
  */
 
-public class ComposeFragment extends DialogFragment implements View.OnClickListener {
+public class ComposeFragment extends DialogFragment implements TextView.OnEditorActionListener {
     // define the interface for passing data back to activity
     public interface EditTweetDialogListener {
 
         void onFinishEditTweet(Tweet tweet);
 
     }
+
     private static final String LOG_TAG = ComposeFragment.class.getSimpleName();
     FragmentComposeBinding binding;
     private TwitterClient client;
     public ComposeFragment() {
 
     }
-
     public static ComposeFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -63,18 +65,18 @@ public class ComposeFragment extends DialogFragment implements View.OnClickListe
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        binding.btnCancel.setOnClickListener(new View.OnClickListener() {
+        binding.ivCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
             }
         });
-        binding.btnTweet.setOnClickListener(this);
         binding.etTweet.requestFocus();
-        binding.etTweet.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        binding.etTweet.setImeOptions(EditorInfo.IME_ACTION_SEND);
         binding.etTweet.setRawInputType(InputType.TYPE_CLASS_TEXT);
         int position = binding.etTweet.length();
         binding.etTweet.setSelection(position);
+        binding.etTweet.setOnEditorActionListener(this);
         binding.tilCompose.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence text, int start, int before, int count) {
@@ -94,32 +96,34 @@ public class ComposeFragment extends DialogFragment implements View.OnClickListe
     }
 
     @Override
-    public void onClick(View v) {
-        Log.d(LOG_TAG, "clicked!");
-        final EditTweetDialogListener listener = (EditTweetDialogListener) getActivity();
-        Log.d(LOG_TAG, binding.etTweet.getText().toString());
-        if (binding.etTweet.getText().length() <= 140) {
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (EditorInfo.IME_ACTION_SEND == actionId) {
+            final EditTweetDialogListener listener = (EditTweetDialogListener) getActivity();
+            Log.d(LOG_TAG, binding.etTweet.getText().toString());
+            if (binding.etTweet.getText().length() <= 140) {
 
-            JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    Log.d(LOG_TAG, "JSONObject success: " + response.toString());
-                    Tweet tweet = new Gson().fromJson(response.toString(), Tweet.class);
-                    listener.onFinishEditTweet(tweet);
-                }
+                JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        Log.d(LOG_TAG, "JSONObject success: " + response.toString());
+                        Tweet tweet = new Gson().fromJson(response.toString(), Tweet.class);
+                        listener.onFinishEditTweet(tweet);
+                    }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    Log.d(LOG_TAG, "JSONObject fail: " + errorResponse.toString());
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        Log.d(LOG_TAG, "JSONObject fail: " + errorResponse.toString());
 
-                }
-            };
-            client.postTweet(handler, binding.etTweet.getText().toString());
-            dismiss();
-        } else {
-            Log.d(LOG_TAG, "exceeding the mex characters");
-            // potentially I can add snackbar here
+                    }
+                };
+                client.postTweet(handler, binding.etTweet.getText().toString());
+                // Dismiss the fragment and its dialog.
+                dismiss();
+            } else {
+                Log.d(LOG_TAG, "exceeding the mex characters");
+                // potentially I can add snackbar here
+            }
         }
+        return false;
     }
-
 }
