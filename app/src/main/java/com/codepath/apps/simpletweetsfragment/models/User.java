@@ -92,4 +92,16 @@ public class User extends BaseModel {
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
     }
+
+    public void setTagLine(String tagLine) {
+        this.tagLine = tagLine;
+    }
+
+    public void setFollowers(int followers) {
+        this.followers = followers;
+    }
+
+    public void setFollowing(int following) {
+        this.following = following;
+    }
 }

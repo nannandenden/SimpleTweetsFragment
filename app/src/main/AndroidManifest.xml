@@ -38,7 +38,11 @@
             android:name=".activities.TimelineActivity"
             android:theme="@style/AppThemeNoActionBar">
         </activity>
-        <activity android:name=".activities.ProfileActivity"
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:theme="@style/AppThemeNoActionBar">
+        </activity>
+        <activity android:name=".activities.FriendsActivity"
             android:theme="@style/AppThemeNoActionBar">
         </activity>
     </application>

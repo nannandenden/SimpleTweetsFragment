@@ -49,7 +49,6 @@ public class HomeTimelineFragment extends TweetsListFragment {
                 Toast.makeText(getContext(), "No network available!", Toast.LENGTH_LONG).show();
             } else {
                 //TODO if not network load from database and pass the data to fragment
-//                tweetsListFragment.addList(tweetList);
             }
 
         } else {
@@ -58,7 +57,6 @@ public class HomeTimelineFragment extends TweetsListFragment {
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                     addList(response);
                     hideProgressBar();
-//                    saveToDataBase(tweets);
                 }
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {

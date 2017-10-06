@@ -1,10 +1,13 @@
 package com.codepath.apps.simpletweetsfragment.activities;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.codepath.apps.simpletweetsfragment.R;
 import com.codepath.apps.simpletweetsfragment.databinding.ActivityProfileBinding;
@@ -26,17 +29,17 @@ public class ProfileActivity extends AppCompatActivity {
     private static final String LOG_TAG = ProfileActivity.class.getSimpleName();
     private TwitterClient client;
     private ActivityProfileBinding binding;
+    private TextView tvFollowers;
+    private TextView tvFollowing;
+    private String screenName = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_profile);
-        setSupportActionBar(binding.toolbar);
-
-        client = TwitterApp.getRestClient();
+        setupView();
+        // get user
         User user = Parcels.unwrap(getIntent().getParcelableExtra("user"));
-        String screenName = null;
         if (user ==  null) {
             // if it's null, current user's profile was clicked
             getUserInfo(client);
@@ -45,9 +48,34 @@ public class ProfileActivity extends AppCompatActivity {
             screenName = user.getScreenName();
             showProfileInfo(user);
         }
-
         startFragment(screenName);
+    }
 
+    private void setupView() {
+        client = TwitterApp.getRestClient();
+        // setup data binding
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_profile);
+        setSupportActionBar(binding.toolbar);
+        tvFollowers = binding.tvFollowers;
+        tvFollowing = binding.tvFollowing;
+        tvFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, FriendsActivity.class);
+                intent.putExtra("is_follower", true);
+                intent.putExtra("screen_name", screenName);
+                startActivity(intent);
+            }
+        });
+        tvFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, FriendsActivity.class);
+                intent.putExtra("is_follower", false);
+                intent.putExtra("screen_name", screenName);
+                startActivity(intent);
+            }
+        });
     }
 
     private void startFragment(String screenName) {

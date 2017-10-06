@@ -120,4 +120,32 @@ public class TwitterClient extends OAuthBaseClient {
         // Can specify query string params directly or through RequestParams.
         client.get(apiUrl, null, handler);
     }
+
+    public void getFollowersList(JsonHttpResponseHandler handler, String screenName, long cursor) {
+        String apiUrl = getApiUrl("followers/list.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("count", "25");
+        // if the screen_name is null, it automatically gets current user's timeline
+        params.put("screen_name", screenName);
+        if (cursor != 0) {
+            params.put("cursor", cursor);
+        }
+        Log.d(LOG_TAG, apiUrl + params);
+        client.get(apiUrl, params, handler);
+    }
+
+    public void getFollowingsList(JsonHttpResponseHandler handler, String screenName, long cursor) {
+        String apiUrl = getApiUrl("friends/list.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("count", "25");
+        // if the screen_name is null, it automatically gets current user's timeline
+        params.put("screen_name", screenName);
+        if (cursor != 0) {
+            params.put("cursor", cursor);
+        }
+        Log.d(LOG_TAG, apiUrl + params);
+        client.get(apiUrl, params, handler);
+    }
 }

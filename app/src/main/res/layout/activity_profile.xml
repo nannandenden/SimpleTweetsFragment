@@ -10,17 +10,16 @@
             type="com.codepath.apps.simpletweetsfragment.models.User"/>
     </data>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context="com.codepath.apps.simpletweetsfragment.activities.ProfileActivity">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
             android:background="@android:color/holo_blue_light"
             android:minHeight="?attr/actionBarSize"
             app:theme="@style/ToolbarTheme"
@@ -88,18 +87,13 @@
                     android:text='@{user.following + " Following"}'/>
 
             </LinearLayout>
-
-
-
         </RelativeLayout>
 
         <FrameLayout
             android:id="@+id/flContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/relativeLayout">
+            android:layout_height="match_parent">
 
         </FrameLayout>
-    </RelativeLayout>
+    </LinearLayout>
 </layout>

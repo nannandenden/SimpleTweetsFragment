@@ -65,7 +65,6 @@ public abstract class TweetsListFragment extends Fragment implements TweetAdapte
     }
 
     private void setView() {
-
         tweets = new ArrayList<>(); // init array list and this is data source
         tweetAdapter = new TweetAdapter(getContext(), tweets, this); // construct the adapter using
         // data binding
@@ -76,7 +75,6 @@ public abstract class TweetsListFragment extends Fragment implements TweetAdapte
         rvTweets.setLayoutManager(linearLayoutManager);
         rvTweets.setAdapter(tweetAdapter);
         rvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
-
             // need to determine which api I need to call tho...
             @Override
             public void onLoadMore(int currentPage, int totalItemCount, RecyclerView recyclerView) {

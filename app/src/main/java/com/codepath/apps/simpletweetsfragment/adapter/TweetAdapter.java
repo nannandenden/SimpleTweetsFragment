@@ -50,7 +50,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
         // get data according to the position
         Tweet tweet = tweets.get(position);
         Log.d(LOG_TAG, String.valueOf(tweet.getId()));
-        holder.bind(tweets.get(position));
+        holder.bind(tweet);
     }
 
     @Override
