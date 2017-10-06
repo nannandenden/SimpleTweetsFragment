@@ -2,6 +2,7 @@ package com.codepath.apps.simpletweetsfragment.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.Toast;
 
 import com.codepath.apps.simpletweetsfragment.models.Tweet;
@@ -32,10 +33,16 @@ public class HomeTimelineFragment extends TweetsListFragment {
         super.onCreate(savedInstanceState);
         // instantiate network call client
         client = TwitterApp.getRestClient();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         populateTimeline(0);
     }
 
     private void populateTimeline(long maxId) {
+        showProgressBar();
         if (!Utils.isNetworkAvailable(getContext())) {
             List<Tweet> tweetList = SQLite.select().from(Tweet.class).queryList();
             if (tweetList.size()==0) {
@@ -50,11 +57,13 @@ public class HomeTimelineFragment extends TweetsListFragment {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                     addList(response);
+                    hideProgressBar();
 //                    saveToDataBase(tweets);
                 }
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                     throwable.printStackTrace();
+                    hideProgressBar();
                 }
             }, maxId);
         }

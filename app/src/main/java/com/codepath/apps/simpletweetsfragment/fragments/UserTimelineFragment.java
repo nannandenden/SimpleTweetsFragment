@@ -3,6 +3,7 @@ package com.codepath.apps.simpletweetsfragment.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.codepath.apps.simpletweetsfragment.models.Tweet;
@@ -43,10 +44,16 @@ public class UserTimelineFragment extends TweetsListFragment {
         // instantiate network call client
         client = TwitterApp.getRestClient();
         screenName = getArguments().getString("screen_name");
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         populateTimeline(screenName, 0);
     }
 
     private void populateTimeline(String screenName, long maxId) {
+        showProgressBar();
         if (!Utils.isNetworkAvailable(getContext())) {
             List<Tweet> tweetList = SQLite.select().from(Tweet.class).queryList();
             if (tweetList.size()==0) {
@@ -62,13 +69,13 @@ public class UserTimelineFragment extends TweetsListFragment {
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                     Log.d(LOG_TAG, "success!: " + response.toString());
                     addList(response);
-
+                    hideProgressBar();
 //                    saveToDataBase(tweets);
-
                 }
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                     throwable.printStackTrace();
+                    hideProgressBar();
                 }
 
             }, screenName, maxId);
