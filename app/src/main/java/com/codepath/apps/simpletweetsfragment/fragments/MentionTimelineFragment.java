@@ -32,10 +32,10 @@ public class MentionTimelineFragment extends TweetsListFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         client = TwitterApp.getRestClient();
-        populateTimeline();
+        populateTimeline(0);
     }
 
-    private void populateTimeline() {
+    private void populateTimeline(long maxId) {
         if (!Utils.isNetworkAvailable(getContext())) {
             List<Tweet> tweetList = SQLite.select().from(Tweet.class).queryList();
             if (tweetList.size()==0) {
@@ -63,7 +63,12 @@ public class MentionTimelineFragment extends TweetsListFragment {
                     throwable.printStackTrace();
                 }
 
-            }, 0);
+            }, maxId);
         }
+    }
+
+    @Override
+    public void loadMorePage(long maxId) {
+        populateTimeline(maxId);
     }
 }
