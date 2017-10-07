@@ -41,6 +41,7 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
+* [x] Links in tweets are clickable and will launch the web browser (see autolink) 
 * [ ] Add a horizontal line in the activity_profile.xml
 * [ ] Reuse an Toolbar
 * [ ] Add Twitter icon/profile image icon inside the toolbar
