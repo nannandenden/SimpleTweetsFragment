@@ -27,7 +27,7 @@ The following **optional** features are implemented:
     * Add the progress bar in the fragment instead of the action bar         
 * [ ] User can **"reply" to any tweet on their home timeline**
   * [ ] The user that wrote the original tweet is automatically "@" replied in compose
-* [ ] User can click on a tweet to be **taken to a "detail view"** of that tweet
+* [x] User can click on a tweet to be **taken to a "detail view"** of that tweet
  * [ ] User can take favorite (and unfavorite) or retweet actions on a tweet
 * [ ] User can **search for tweets matching a particular query** and see results
 * [ ] Usernames and hashtags are styled and clickable within tweets [using clickable spans](http://guides.codepath.com/android/Working-with-the-TextView#creating-clickable-styled-spans)
@@ -45,6 +45,9 @@ The following **additional** features are implemented:
 * [ ] Reuse an Toolbar
 * [ ] Add Twitter icon/profile image icon inside the toolbar
 * [ ] Use DBFlow to support the offline mode 
+* [ ] Fix the crash when profile picture is clicked when in the profile page 
+* [ ] Play video if media is video or gif
+* [ ] add the hyperlink to open the webview/browswer  
 
 ## Video Walkthrough
 

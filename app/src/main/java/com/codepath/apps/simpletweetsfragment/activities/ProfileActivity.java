@@ -83,7 +83,7 @@ public class ProfileActivity extends AppCompatActivity {
         // display the user timeline fragment inside the container dynamically
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         // replace the container with the usertimeline fragment
-        ft.replace(R.id.flContainer, fragment);
+        ft.replace(binding.flContainer.getId(), fragment);
         ft.commit();
     }
 

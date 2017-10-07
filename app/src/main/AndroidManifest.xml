@@ -42,7 +42,11 @@
             android:name=".activities.ProfileActivity"
             android:theme="@style/AppThemeNoActionBar">
         </activity>
-        <activity android:name=".activities.FriendsActivity"
+        <activity
+            android:name=".activities.FriendsActivity"
+            android:theme="@style/AppThemeNoActionBar">
+        </activity>
+        <activity android:name=".activities.TweetDetailActivity"
             android:theme="@style/AppThemeNoActionBar">
         </activity>
     </application>

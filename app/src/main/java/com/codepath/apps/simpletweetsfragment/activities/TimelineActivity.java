@@ -20,6 +20,7 @@ import com.codepath.apps.simpletweetsfragment.fragments.TweetsListFragment;
 import com.codepath.apps.simpletweetsfragment.models.Tweet;
 import com.codepath.apps.simpletweetsfragment.models.User;
 import com.codepath.apps.simpletweetsfragment.network.MyDatabase;
+import com.codepath.apps.simpletweetsfragment.utils.Utils;
 import com.raizlabs.android.dbflow.config.DatabaseDefinition;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
@@ -31,7 +32,7 @@ import org.parceler.Parcels;
 import java.util.List;
 
 public class TimelineActivity extends AppCompatActivity implements ComposeFragment
-        .EditTweetDialogListener, TweetsListFragment.OnTweetSelectedListener {
+        .EditTweetDialogListener, TweetsListFragment.OnImageSelectedListener, TweetsListFragment.OnTweetSelectedListener {
 
     private static final String LOG_TAG = TimelineActivity.class.getSimpleName();
     private ActivityTimelineBinding binding;
@@ -128,9 +129,14 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
 
     // profile image was clicked
     @Override
-    public void onTweetClick(User user) {
+    public void onImageClick(User user) {
         Log.d(LOG_TAG, "user: " + user.toString());
         displayProfileInfo(user);
+    }
+
+    @Override
+    public void onTweetClick(Tweet tweet) {
+        displayTweetDetail(tweet);
     }
 
     private void displayProfileInfo(User user) {
@@ -139,5 +145,15 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
             intent.putExtra("user", Parcels.wrap(user));
         }
         startActivity(intent);
+    }
+
+    private void displayTweetDetail(Tweet tweet) {
+        if (tweet == null) {
+            Utils.showToast(this, "tweet is null!");
+        } else {
+            Intent intent = new Intent(this, TweetDetailActivity.class);
+            intent.putExtra("tweet", Parcels.wrap(tweet));
+            startActivity(intent);
+        }
     }
 }
