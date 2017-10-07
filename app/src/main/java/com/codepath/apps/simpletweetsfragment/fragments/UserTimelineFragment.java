@@ -86,4 +86,15 @@ public class UserTimelineFragment extends TweetsListFragment {
     public void loadMorePage(long maxId) {
         populateTimeline(screenName, maxId);
     }
+
+    @Override
+    public void onImageClick(View view, int position) {
+        // call this method to disable the click
+    }
+
+    @Override
+    public void onTweetRowClick(View view, int position) {
+        // need to make some adjustment to fix this crash
+        // since it's my own tweet, it is crashing
+    }
 }

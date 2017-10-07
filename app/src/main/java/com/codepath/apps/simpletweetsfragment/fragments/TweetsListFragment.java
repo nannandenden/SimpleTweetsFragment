@@ -18,15 +18,14 @@ import com.codepath.apps.simpletweetsfragment.activities.EndlessRecyclerViewScro
 import com.codepath.apps.simpletweetsfragment.adapter.TweetAdapter;
 import com.codepath.apps.simpletweetsfragment.databinding.FragmentsTweetsListBinding;
 import com.codepath.apps.simpletweetsfragment.models.Tweet;
+import com.codepath.apps.simpletweetsfragment.models.TweetDeserializer;
 import com.codepath.apps.simpletweetsfragment.models.User;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,11 +34,14 @@ import java.util.List;
  */
 
 public abstract class TweetsListFragment extends Fragment implements TweetAdapter
-        .OnProfileImageClickListener {
+        .OnProfileImageClickListener, TweetAdapter.OnTweetRowClickListener {
 
     // define the interface to communicate it's activity
+    public interface OnImageSelectedListener {
+        void onImageClick(User user);
+    }
     public interface OnTweetSelectedListener {
-        void onTweetClick(User user);
+        void onTweetClick(Tweet tweet);
     }
 
     private static final String LOG_TAG = TweetsListFragment.class.getSimpleName();
@@ -66,7 +68,9 @@ public abstract class TweetsListFragment extends Fragment implements TweetAdapte
 
     private void setView() {
         tweets = new ArrayList<>(); // init array list and this is data source
-        tweetAdapter = new TweetAdapter(getContext(), tweets, this); // construct the adapter using
+        tweetAdapter = new TweetAdapter(getContext(), tweets); // construct the adapter using
+        tweetAdapter.setOnProfileImageClickListener(this);
+        tweetAdapter.setOnTweetRowClickListener(this);
         // data binding
         rvTweets = binding.rvTweets;
         progressBar = binding.progressBar;
@@ -87,23 +91,20 @@ public abstract class TweetsListFragment extends Fragment implements TweetAdapte
     }
 
     public void addList(JSONArray response) {
-        Log.d(LOG_TAG, "JSONObject success: " + response.toString());
-        if (response.length() == 1) {
-            // handle the case where there is only one object inside the array. Same GSON parse
-            // did not work for this case
-            JSONObject object = null;
+        List<Tweet> tweetList = new ArrayList<>();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Tweet.class, new TweetDeserializer());
+        Gson gson = gsonBuilder.create();
+        for (int i = 0; i < response.length(); i++) {
             try {
-                 object = response.getJSONObject(0);
+                Tweet tweet = gson.fromJson(response.getJSONObject(i).toString(), Tweet.class);
+                Log.d(LOG_TAG, tweet.toString());
+                tweetList.add(tweet);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Tweet tweet = new Gson().fromJson(object.toString(), Tweet.class);
-            addOneTweet(tweet);
-        } else {
-            Type tweetType = new TypeToken<ArrayList<Tweet>>(){}.getType();
-            List<Tweet> tweetList = new Gson().fromJson(response.toString(), tweetType);
-            addList(tweetList);
         }
+        addList(tweetList);
     }
 
     public void addList(List<Tweet> list) {
@@ -136,7 +137,13 @@ public abstract class TweetsListFragment extends Fragment implements TweetAdapte
         Log.d(LOG_TAG, position + " clicked");
         // pass the tweet object back to it's activity using the listener in this class
         User user = tweets.get(position).getUser();
-        ((OnTweetSelectedListener) getActivity()).onTweetClick(user);
+        ((OnImageSelectedListener) getActivity()).onImageClick(user);
+    }
+
+    @Override
+    public void onTweetRowClick(View view, int position) {
+        Tweet tweet = tweets.get(position);
+        ((OnTweetSelectedListener) getActivity()).onTweetClick(tweet);
     }
 
     public abstract void loadMorePage(long maxId);

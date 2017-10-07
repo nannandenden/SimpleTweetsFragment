@@ -32,6 +32,17 @@ public class Tweet extends BaseModel {
     @SerializedName("created_at")
     public String createdAt;
 
+    @Column
+    @SerializedName("retweet_count")
+    public int reTweets;
+
+    @Column
+    @SerializedName("favorite_count")
+    public int likes;
+
+    @Column
+    public String mediaUrl;
+
     // one-to=one relation Tweet has a child element User saved inside
     // User table is saved indie an another table
     // unable to concatenate the parent element User via @Column but use @Foreignkey instead
@@ -42,7 +53,6 @@ public class Tweet extends BaseModel {
     public Tweet() {
         // empty constructor needed for parcel
     }
-
     public String getBody() {
         return body;
     }
@@ -60,6 +70,14 @@ public class Tweet extends BaseModel {
         return user;
     }
 
+    public int getReTweets() {
+        return reTweets;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
     public void setUid(long uid) {
         this.uid = uid;
     }
@@ -70,6 +88,18 @@ public class Tweet extends BaseModel {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setReTweets(int reTweets) {
+        this.reTweets = reTweets;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public void setMediaUrl(String mediaUrl) {
+        this.mediaUrl = mediaUrl;
     }
 
     public void setUser(User user) {

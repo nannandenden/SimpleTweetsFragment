@@ -19,21 +19,35 @@ import java.util.List;
 
 public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
 
-    // for setup the listener to pass back to the fragment
+    // for setup the listenerImage to pass back to the fragment
+    private OnProfileImageClickListener imageClickListener;
     public interface OnProfileImageClickListener {
+
         void onImageClick(View view, int position);
     }
-    private OnProfileImageClickListener listener;
+
+    public void setOnProfileImageClickListener(OnProfileImageClickListener imageClickListener) {
+        this.imageClickListener = imageClickListener;
+    }
+    // set up row click to show the tweet detail
+    private OnTweetRowClickListener tweetRowClickListener;
+    public interface OnTweetRowClickListener {
+        void onTweetRowClick(View view, int position);
+
+    }
+    public void setOnTweetRowClickListener(OnTweetRowClickListener tweetRowClickListener) {
+        this.tweetRowClickListener = tweetRowClickListener;
+    }
+
 
     private static final String LOG_TAG = TweetAdapter.class.getSimpleName();
     private Context context;
     private List<Tweet> tweets;
 
     // pass in the Tweets array in the constructor to use it
-    public TweetAdapter(Context context, List<Tweet> tweets, OnProfileImageClickListener listener) {
+    public TweetAdapter(Context context, List<Tweet> tweets) {
         this.context = context;
         this.tweets = tweets;
-        this.listener = listener;
     }
 
     @Override
@@ -60,7 +74,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
 
     // bind the tweet object value with the references
     // normally we use static for viewholder class to avoid memory leak
-    // define as non-static object since we need to access listener event
+    // define as non-static object since we need to access listenerImage event
     public class ViewHolder extends RecyclerView.ViewHolder {
         final ItemTweetBinding binding;
 
@@ -71,10 +85,16 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
         }
 
         public void bind(Tweet tweet) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tweetRowClickListener.onTweetRowClick(v, getAdapterPosition());
+                }
+            });
             binding.ivProfileImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onImageClick(v, getAdapterPosition());
+                    imageClickListener.onImageClick(v, getAdapterPosition());
                 }
             });
             // populate the view according to the data

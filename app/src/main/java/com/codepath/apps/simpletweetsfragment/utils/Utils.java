@@ -5,11 +5,14 @@ import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -56,5 +59,20 @@ public class Utils {
         public static void loadImage(ImageView imageView, String url) {
             Glide.with(imageView.getContext()).load(url).into(imageView);
         }
+
+        @BindingAdapter({"bind:mediaUrl"})
+        public static void loadMedia(ImageView imageView, String url) {
+            if (!TextUtils.isEmpty(url)) {
+                Glide.with(imageView.getContext())
+                        .load(url)
+                        .override(1300, Target.SIZE_ORIGINAL)
+                        .centerCrop()
+                        .into(imageView);
+            }
+        }
+    }
+
+    public static void showToast(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 }
