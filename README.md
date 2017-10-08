@@ -46,9 +46,7 @@ The following **additional** features are implemented:
 * [ ] Reuse an Toolbar
 * [ ] Add Twitter icon/profile image icon inside the toolbar
 * [ ] Use DBFlow to support the offline mode 
-* [ ] Fix the crash when profile picture is clicked when in the profile page 
 * [ ] Play video if media is video or gif
-* [ ] add the hyperlink to open the webview/browswer  
 
 ## Video Walkthrough
 
