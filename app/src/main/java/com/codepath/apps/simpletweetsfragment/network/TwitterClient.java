@@ -148,4 +148,31 @@ public class TwitterClient extends OAuthBaseClient {
         Log.d(LOG_TAG, apiUrl + params);
         client.get(apiUrl, params, handler);
     }
+
+    public void userShow(JsonHttpResponseHandler handler, String screenName) {
+        String apiUrl = getApiUrl("users/show.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        // if the screen_name is null, it automatically gets current user's timeline
+        params.put("screen_name", screenName);
+        Log.d(LOG_TAG, apiUrl + params);
+        client.get(apiUrl, params, handler);
+    }
+
+    public void searchTweets(JsonHttpResponseHandler handler, String query, long maxId) {
+        String apiUrl = getApiUrl("search/tweets.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("count", "25");
+        params.put("q", query);
+        if (maxId == 0) {
+            // initial call
+            params.put("since_id", 1);
+        } else {
+            params.put("max_id", maxId);
+        }
+        Log.d(LOG_TAG, apiUrl + params);
+        client.get(apiUrl, params, handler);
+
+    }
 }

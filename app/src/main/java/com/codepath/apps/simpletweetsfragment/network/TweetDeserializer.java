@@ -1,5 +1,7 @@
-package com.codepath.apps.simpletweetsfragment.models;
+package com.codepath.apps.simpletweetsfragment.network;
 
+import com.codepath.apps.simpletweetsfragment.models.Tweet;
+import com.codepath.apps.simpletweetsfragment.models.User;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;

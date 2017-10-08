@@ -46,7 +46,11 @@
             android:name=".activities.FriendsActivity"
             android:theme="@style/AppThemeNoActionBar">
         </activity>
-        <activity android:name=".activities.TweetDetailActivity"
+        <activity
+            android:name=".activities.TweetDetailActivity"
+            android:theme="@style/AppThemeNoActionBar">
+        </activity>
+        <activity android:name=".activities.SearchResultActivity"
             android:theme="@style/AppThemeNoActionBar">
         </activity>
     </application>

@@ -14,11 +14,11 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.codepath.apps.simpletweetsfragment.R;
-import com.codepath.apps.simpletweetsfragment.activities.EndlessRecyclerViewScrollListener;
+import com.codepath.apps.simpletweetsfragment.utils.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.simpletweetsfragment.adapter.TweetAdapter;
 import com.codepath.apps.simpletweetsfragment.databinding.FragmentsTweetsListBinding;
 import com.codepath.apps.simpletweetsfragment.models.Tweet;
-import com.codepath.apps.simpletweetsfragment.models.TweetDeserializer;
+import com.codepath.apps.simpletweetsfragment.network.TweetDeserializer;
 import com.codepath.apps.simpletweetsfragment.models.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,8 +33,11 @@ import java.util.List;
  * Created by nanden on 10/3/17.
  */
 
-public abstract class TweetsListFragment extends Fragment implements TweetAdapter
-        .OnProfileImageClickListener, TweetAdapter.OnTweetRowClickListener {
+public abstract class TweetsListFragment extends Fragment implements
+        TweetAdapter.OnProfileImageClickListener,
+        TweetAdapter.OnTweetRowClickListener,
+        TweetAdapter.OnSpanNameClickListener,
+        TweetAdapter.OnSpanTagClickListener {
 
     // define the interface to communicate it's activity
     public interface OnImageSelectedListener {
@@ -43,7 +46,12 @@ public abstract class TweetsListFragment extends Fragment implements TweetAdapte
     public interface OnTweetSelectedListener {
         void onTweetClick(Tweet tweet);
     }
-
+    public interface OnSpanNameClickedListener {
+        void onSpanNameClick(String screenName);
+    }
+    public interface OnSpanTagClickedListener {
+        void onSpanTagClick(String hashTag);
+    }
     private static final String LOG_TAG = TweetsListFragment.class.getSimpleName();
     private FragmentsTweetsListBinding binding;
     private TweetAdapter tweetAdapter;
@@ -71,6 +79,8 @@ public abstract class TweetsListFragment extends Fragment implements TweetAdapte
         tweetAdapter = new TweetAdapter(getContext(), tweets); // construct the adapter using
         tweetAdapter.setOnProfileImageClickListener(this);
         tweetAdapter.setOnTweetRowClickListener(this);
+        tweetAdapter.setOnSpanNameClickListener(this);
+        tweetAdapter.setOnSpanTagClickListener(this);
         // data binding
         rvTweets = binding.rvTweets;
         progressBar = binding.progressBar;
@@ -146,6 +156,15 @@ public abstract class TweetsListFragment extends Fragment implements TweetAdapte
         ((OnTweetSelectedListener) getActivity()).onTweetClick(tweet);
     }
 
-    public abstract void loadMorePage(long maxId);
+    @Override
+    public void onSpanNameClick(String name) {
+        ((OnSpanNameClickedListener) getActivity()).onSpanNameClick(name);
+    }
 
+    @Override
+    public void onSpanTagClick(String hashTag) {
+        ((OnSpanTagClickedListener) getActivity()).onSpanTagClick(hashTag);
+    }
+
+    public abstract void loadMorePage(long maxId);
 }
