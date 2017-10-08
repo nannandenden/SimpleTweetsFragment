@@ -54,19 +54,23 @@
 
         <com.codepath.apps.simpletweetsfragment.utils.LinkifiedTextView
             android:id="@+id/tvBody"
+            android:padding="@dimen/tv_padding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/ivProfileImage"
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/tvName"
+            android:textSize="18sp"
             android:autoLink="all"
             android:maxLines="4"
+            android:ellipsize="end"
             android:layout_toEndOf="@+id/ivProfileImage"
             android:text='@{tweet.body}'/>
 
         <ImageView
             android:id="@+id/ivReply"
-            android:layout_margin="@dimen/iv_margin"
+            android:layout_marginTop="3dp"
+            android:paddingLeft="@dimen/iv_padding"
+            android:paddingRight="@dimen/iv_padding"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvBody"
@@ -77,6 +81,8 @@
             android:id="@+id/tvRetweets"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingRight="@dimen/tv_padding"
+            android:paddingLeft="@dimen/tv_padding"
             android:layout_below="@+id/tvBody"
             android:layout_toEndOf="@id/ivReply"
             android:text='@{tweet.reTweets == 0 ? "": tweet.reTweets + " Retweet   "}'/>
@@ -85,6 +91,8 @@
             android:id="@+id/tvLikes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingRight="@dimen/tv_padding"
+            android:paddingLeft="@dimen/tv_padding"
             android:layout_below="@+id/tvBody"
             android:layout_toEndOf="@+id/tvRetweets"
             android:text='@{tweet.likes == 0 ? "": tweet.likes + " Likes"}'/>

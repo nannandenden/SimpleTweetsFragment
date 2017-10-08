@@ -27,6 +27,7 @@ public class FriendsActivity extends AppCompatActivity {
         // set views
         toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         String title = isFollowers ? "Followers" : "Following";
         getSupportActionBar().setTitle(title);
         if (isFollowers) {

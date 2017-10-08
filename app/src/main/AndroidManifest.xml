@@ -40,18 +40,34 @@
         </activity>
         <activity
             android:name=".activities.ProfileActivity"
+            android:parentActivityName=".activities.TimelineActivity"
             android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.TimelineActivity"/>
         </activity>
         <activity
             android:name=".activities.FriendsActivity"
+            android:parentActivityName=".activities.ProfileActivity"
             android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.ProfileActivity"/>
         </activity>
         <activity
             android:name=".activities.TweetDetailActivity"
+            android:parentActivityName=".activities.TimelineActivity"
             android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.TimelineActivity"/>
         </activity>
         <activity android:name=".activities.SearchResultActivity"
+                  android:parentActivityName=".activities.TimelineActivity"
             android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.TimelineActivity"/>
         </activity>
     </application>
 
