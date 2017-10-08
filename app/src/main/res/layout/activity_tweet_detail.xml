@@ -21,7 +21,7 @@
             android:layout_alignParentTop="true"
             android:background="@android:color/holo_blue_light"
             android:minHeight="?attr/actionBarSize"
-            app:theme="@style/ToolbarTheme"/>
+            android:theme="@style/ToolbarTheme"/>
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/tvProfileImage"
@@ -59,6 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/tvProfileImage"
+            android:autoLink="all"
             android:text='@{tweet.body}'
             android:textAppearance="@android:style/TextAppearance.Medium"/>
 
@@ -96,7 +97,6 @@
             android:layout_below="@+id/tvTimeStamp"
             android:layout_toEndOf="@+id/tvRetweets"
             android:text='@{tweet.likes == 0 ? "": tweet.likes + " Likes"}'/>
-
 
     </RelativeLayout>
 </layout>

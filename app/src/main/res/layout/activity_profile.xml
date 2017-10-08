@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:background="@android:color/holo_blue_light"
             android:minHeight="?attr/actionBarSize"
-            app:theme="@style/ToolbarTheme"/>
+            android:theme="@style/ToolbarTheme"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

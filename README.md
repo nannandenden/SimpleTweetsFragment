@@ -30,7 +30,7 @@ The following **optional** features are implemented:
 * [x] User can click on a tweet to be **taken to a "detail view"** of that tweet
  * [ ] User can take favorite (and unfavorite) or retweet actions on a tweet
 * [ ] User can **search for tweets matching a particular query** and see results
-* [ ] Usernames and hashtags are styled and clickable within tweets [using clickable spans](http://guides.codepath.com/android/Working-with-the-TextView#creating-clickable-styled-spans)
+* [x] Usernames and hashtags are styled and clickable within tweets [using clickable spans](http://guides.codepath.com/android/Working-with-the-TextView#creating-clickable-styled-spans)
 
 The following **bonus** features are implemented:
 
@@ -41,6 +41,7 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
+* [x] Links in tweets are clickable and will launch the web browser (see autolink) 
 * [ ] Add a horizontal line in the activity_profile.xml
 * [ ] Reuse an Toolbar
 * [ ] Add Twitter icon/profile image icon inside the toolbar

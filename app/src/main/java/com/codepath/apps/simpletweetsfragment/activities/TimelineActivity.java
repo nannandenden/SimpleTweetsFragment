@@ -20,38 +20,112 @@ import com.codepath.apps.simpletweetsfragment.fragments.TweetsListFragment;
 import com.codepath.apps.simpletweetsfragment.models.Tweet;
 import com.codepath.apps.simpletweetsfragment.models.User;
 import com.codepath.apps.simpletweetsfragment.network.MyDatabase;
+import com.codepath.apps.simpletweetsfragment.network.TwitterApp;
+import com.codepath.apps.simpletweetsfragment.network.TwitterClient;
 import com.codepath.apps.simpletweetsfragment.utils.Utils;
+import com.google.gson.Gson;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.raizlabs.android.dbflow.config.DatabaseDefinition;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.util.List;
 
-public class TimelineActivity extends AppCompatActivity implements ComposeFragment
-        .EditTweetDialogListener, TweetsListFragment.OnImageSelectedListener, TweetsListFragment.OnTweetSelectedListener {
+import cz.msebera.android.httpclient.Header;
+
+public class TimelineActivity extends AppCompatActivity implements
+        ComposeFragment.EditTweetDialogListener,
+        TweetsListFragment.OnImageSelectedListener,
+        TweetsListFragment.OnTweetSelectedListener,
+        TweetsListFragment.OnSpanNameClickedListener,
+        TweetsListFragment.OnSpanTagClickedListener {
 
     private static final String LOG_TAG = TimelineActivity.class.getSimpleName();
     private ActivityTimelineBinding binding;
     private TweetsPagerAdapter pagerAdapter;
+    private TwitterClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        client = TwitterApp.getRestClient();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_timeline);
         setView();
     }
 
+    /**
+     * Override methods
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_timeline, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public void onFinishEditTweet(Tweet tweet) {
+        Log.d(LOG_TAG, "input: " + tweet);
+        // get the instance of the HomeTimelineFragment
+        HomeTimelineFragment fragment = (HomeTimelineFragment) pagerAdapter.getRegisteredFragment(0);
+        // directory calling the fragment method to add a new tweet
+        fragment.addOneTweet(tweet);
+    }
 
+    @Override
+    public void onImageClick(User user) {
+        // profile image was licked, display profile timeline
+        Log.d(LOG_TAG, "user: " + user.toString());
+        displayProfileInfo(user);
+    }
+
+    @Override
+    public void onTweetClick(Tweet tweet) {
+        // row of the tweet was clicked, display the tweet detail
+        displayTweetDetail(tweet);
+    }
+
+    @Override
+    public void onSpanNameClick(String screenName) {
+        // using the screenName to get the user object
+        String searchName = screenName.replace("@", "");
+        Log.d(LOG_TAG, searchName);
+        JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Gson gson = new Gson();
+                User user = gson.fromJson(response.toString(), User.class);
+                displayProfileInfo(user);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Utils.showToast(TimelineActivity.this, "Request Failed: " + throwable.getMessage());
+            }
+        };
+        if (!Utils.isNetworkAvailable(this)) {
+            Utils.showToast(this, "No internet connection");
+        } else {
+            client.userShow(handler, searchName);
+        }
+    }
+
+    @Override
+    public void onSpanTagClick(String hashTag) {
+        Log.d(LOG_TAG, "hashTag: " + hashTag);
+        Intent intent = new Intent(this, SearchResultActivity.class);
+        intent.putExtra("hash_tag", hashTag);
+        startActivity(intent);
+    }
+
+    /**
+     * private methods
+     */
     private void setView() {
         // get the view pager
         setSupportActionBar(binding.toolbar);
@@ -72,18 +146,6 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
                 composeFragment.show(fragmentManager, "fragment_compose");
             }
         });
-    }
-
-
-    // for adding the new tweet
-    @Override
-    public void onFinishEditTweet(Tweet tweet) {
-        Log.d(LOG_TAG, "input: " + tweet);
-        // get the instance of the HomeTimelineFragment
-        HomeTimelineFragment fragment = (HomeTimelineFragment) pagerAdapter.getRegisteredFragment
-                (0);
-        // directory calling the fragment method to add a new tweet
-        fragment.addOneTweet(tweet);
     }
 
     private void saveToDataBase(List<Tweet> tweets) {
@@ -122,21 +184,13 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
         transaction.execute();
 
     }
+
+    /**
+     * public methods
+     */
     // profile icon on the action bar was clicked
     public void onProfileView(MenuItem item) {
         displayProfileInfo(null);
-    }
-
-    // profile image was clicked
-    @Override
-    public void onImageClick(User user) {
-        Log.d(LOG_TAG, "user: " + user.toString());
-        displayProfileInfo(user);
-    }
-
-    @Override
-    public void onTweetClick(Tweet tweet) {
-        displayTweetDetail(tweet);
     }
 
     private void displayProfileInfo(User user) {
@@ -156,4 +210,5 @@ public class TimelineActivity extends AppCompatActivity implements ComposeFragme
             startActivity(intent);
         }
     }
+
 }

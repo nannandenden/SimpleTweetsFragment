@@ -1,4 +1,4 @@
-package com.codepath.apps.simpletweetsfragment.activities;
+package com.codepath.apps.simpletweetsfragment.utils;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

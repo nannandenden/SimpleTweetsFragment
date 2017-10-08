@@ -1,6 +1,7 @@
 package com.codepath.apps.simpletweetsfragment.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,8 +11,10 @@ import android.view.ViewGroup;
 import com.codepath.apps.simpletweetsfragment.R;
 import com.codepath.apps.simpletweetsfragment.databinding.ItemTweetBinding;
 import com.codepath.apps.simpletweetsfragment.models.Tweet;
+import com.codepath.apps.simpletweetsfragment.utils.PatternEditableBuilder;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by nanden on 9/26/17.
@@ -28,6 +31,22 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
 
     public void setOnProfileImageClickListener(OnProfileImageClickListener imageClickListener) {
         this.imageClickListener = imageClickListener;
+    }
+    // for clicking something like @codepath
+    private OnSpanNameClickListener nameClickListener;
+    public interface OnSpanNameClickListener {
+        void onSpanNameClick(String name);
+    }
+    public void setOnSpanNameClickListener(OnSpanNameClickListener nameClickListener) {
+        this.nameClickListener = nameClickListener;
+    }
+    // for clicking something like #codepath
+    private OnSpanTagClickListener tagClickListener;
+    public interface OnSpanTagClickListener {
+        void onSpanTagClick(String hashTag);
+    }
+    public void setOnSpanTagClickListener(OnSpanTagClickListener tagClickListener) {
+        this.tagClickListener = tagClickListener;
     }
     // set up row click to show the tweet detail
     private OnTweetRowClickListener tweetRowClickListener;
@@ -100,6 +119,22 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
             // populate the view according to the data
             binding.setTweet(tweet);
             binding.executePendingBindings();
+            new PatternEditableBuilder().
+                    addPattern(Pattern.compile("\\@(\\w+)"), Color.BLUE, new PatternEditableBuilder
+                            .SpannableClickedListener() {
+                        @Override
+                        public void onSpanClicked(String text) {
+                            nameClickListener.onSpanNameClick(text);
+                        }
+                    }).
+                    addPattern(Pattern.compile("\\#(\\w+)"), Color.BLUE, new PatternEditableBuilder
+                            .SpannableClickedListener() {
+                        @Override
+                        public void onSpanClicked(String text) {
+                            tagClickListener.onSpanTagClick(text);
+                        }
+                    }).
+                    into(binding.tvBody);
         }
     }
 

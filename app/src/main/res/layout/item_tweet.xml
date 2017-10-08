@@ -52,13 +52,15 @@
             android:maxLines="1"
             android:text='@{" · " + tweet.createdAt}'/>
 
-        <TextView
+        <com.codepath.apps.simpletweetsfragment.utils.LinkifiedTextView
             android:id="@+id/tvBody"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/ivProfileImage"
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/tvName"
+            android:autoLink="all"
+            android:maxLines="4"
             android:layout_toEndOf="@+id/ivProfileImage"
             android:text='@{tweet.body}'/>
 
