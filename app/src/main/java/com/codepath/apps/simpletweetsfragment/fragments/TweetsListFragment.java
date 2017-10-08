@@ -37,7 +37,8 @@ public abstract class TweetsListFragment extends Fragment implements
         TweetAdapter.OnProfileImageClickListener,
         TweetAdapter.OnTweetRowClickListener,
         TweetAdapter.OnSpanNameClickListener,
-        TweetAdapter.OnSpanTagClickListener {
+        TweetAdapter.OnSpanTagClickListener,
+        TweetAdapter.OnReplyClickListener {
 
     // define the interface to communicate it's activity
     public interface OnImageSelectedListener {
@@ -51,6 +52,9 @@ public abstract class TweetsListFragment extends Fragment implements
     }
     public interface OnSpanTagClickedListener {
         void onSpanTagClick(String hashTag);
+    }
+    public interface OnReplyClickedListener {
+        void onReplyClicked(Tweet tweet);
     }
     private static final String LOG_TAG = TweetsListFragment.class.getSimpleName();
     private FragmentsTweetsListBinding binding;
@@ -81,6 +85,7 @@ public abstract class TweetsListFragment extends Fragment implements
         tweetAdapter.setOnTweetRowClickListener(this);
         tweetAdapter.setOnSpanNameClickListener(this);
         tweetAdapter.setOnSpanTagClickListener(this);
+        tweetAdapter.setOnReplyClickListener(this);
         // data binding
         rvTweets = binding.rvTweets;
         progressBar = binding.progressBar;
@@ -92,7 +97,6 @@ public abstract class TweetsListFragment extends Fragment implements
             // need to determine which api I need to call tho...
             @Override
             public void onLoadMore(int currentPage, int totalItemCount, RecyclerView recyclerView) {
-
                 int lastPosition = tweets.size()-1;
                 long maxId = tweets.get(lastPosition).getId()-1;
                 loadMorePage(maxId);
@@ -164,6 +168,12 @@ public abstract class TweetsListFragment extends Fragment implements
     @Override
     public void onSpanTagClick(String hashTag) {
         ((OnSpanTagClickedListener) getActivity()).onSpanTagClick(hashTag);
+    }
+
+    @Override
+    public void onReplyClick(View view, int position) {
+        Tweet tweet = tweets.get(position);
+        ((OnReplyClickedListener) getActivity()).onReplyClicked(tweet);
     }
 
     public abstract void loadMorePage(long maxId);

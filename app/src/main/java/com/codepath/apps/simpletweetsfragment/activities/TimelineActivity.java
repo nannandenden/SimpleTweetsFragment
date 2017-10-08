@@ -43,7 +43,8 @@ public class TimelineActivity extends AppCompatActivity implements
         TweetsListFragment.OnImageSelectedListener,
         TweetsListFragment.OnTweetSelectedListener,
         TweetsListFragment.OnSpanNameClickedListener,
-        TweetsListFragment.OnSpanTagClickedListener {
+        TweetsListFragment.OnSpanTagClickedListener,
+        TweetsListFragment.OnReplyClickedListener {
 
     private static final String LOG_TAG = TimelineActivity.class.getSimpleName();
     private ActivityTimelineBinding binding;
@@ -123,6 +124,14 @@ public class TimelineActivity extends AppCompatActivity implements
         startActivity(intent);
     }
 
+    @Override
+    public void onReplyClicked(Tweet tweet) {
+        String id = String.valueOf(tweet.getId());
+        String screenName = tweet.getUser().getScreenName();
+        Log.d(LOG_TAG, "id: " + id + "\tname: " + screenName);
+        openComposeMessageDialog(id, screenName);
+    }
+
     /**
      * private methods
      */
@@ -141,9 +150,7 @@ public class TimelineActivity extends AppCompatActivity implements
         binding.fabTimeline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                ComposeFragment composeFragment = ComposeFragment.newInstance();
-                composeFragment.show(fragmentManager, "fragment_compose");
+                openComposeMessageDialog(null, null);
             }
         });
     }
@@ -209,6 +216,13 @@ public class TimelineActivity extends AppCompatActivity implements
             intent.putExtra("tweet", Parcels.wrap(tweet));
             startActivity(intent);
         }
+    }
+
+    private void openComposeMessageDialog(String id, String screenName) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        ComposeFragment composeFragment = ComposeFragment.newInstance(id, screenName);
+        composeFragment.show(fragmentManager, "fragment_compose");
+
     }
 
 }

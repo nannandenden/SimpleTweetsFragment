@@ -40,6 +40,15 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
     public void setOnSpanNameClickListener(OnSpanNameClickListener nameClickListener) {
         this.nameClickListener = nameClickListener;
     }
+    // interface for reply
+    private OnReplyClickListener replyClickListener;
+    public interface OnReplyClickListener {
+        void onReplyClick(View view, int position);
+    }
+    public void setOnReplyClickListener(OnReplyClickListener replyClickListener) {
+        this.replyClickListener = replyClickListener;
+    }
+
     // for clicking something like #codepath
     private OnSpanTagClickListener tagClickListener;
     public interface OnSpanTagClickListener {
@@ -114,6 +123,12 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
                 @Override
                 public void onClick(View v) {
                     imageClickListener.onImageClick(v, getAdapterPosition());
+                }
+            });
+            binding.ivReply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    replyClickListener.onReplyClick(v, getAdapterPosition());
                 }
             });
             // populate the view according to the data
