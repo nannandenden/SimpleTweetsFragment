@@ -12,8 +12,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 /*
- * 
- * This is the object responsible for communicating with a REST API. 
+ * This is the object responsible for communicating with a REST API.
  * Specify the constants below to change the API being communicated with.
  * See a full list of supported API classes: 
  *   https://github.com/scribejava/scribejava/tree/master/scribejava-apis/src/main/java/com/github/scribejava/apis
@@ -47,9 +46,6 @@ public class TwitterClient extends OAuthBaseClient {
                         context.getString(R.string.intent_scheme), context.getPackageName(), FALLBACK_URL));
     }
 
-    // CHANGE THIS
-    // DEFINE METHODS for different API endpoints here
-    // since_id for initial loading, then max_id for infinite scroll
     public void getHomeTimeline(AsyncHttpResponseHandler handler, long maxId) {
         String apiUrl = getApiUrl("statuses/home_timeline.json");
         // Can specify query string params directly or through RequestParams.
@@ -75,12 +71,15 @@ public class TwitterClient extends OAuthBaseClient {
 	 *    i.e client.get(apiUrl, params, handler);
 	 *    i.e client.post(apiUrl, params, handler);
 	 */
-    public void postTweet(AsyncHttpResponseHandler handler, String message) {
+    public void postTweet(AsyncHttpResponseHandler handler, String message, String id) {
         String apiUrl = getApiUrl("statuses/update.json");
         RequestParams params = new RequestParams();
         params.put("status", message);
+        if (id != null) {
+            params.put("in_reply_to_status_id", id);
+        }
+        Log.d(LOG_TAG, "apiUrl: " + apiUrl + "\tparams: " + params);
         client.post(apiUrl, params, handler);
-
     }
 
     public void getMentionTimeline(JsonHttpResponseHandler handler, long maxId) {

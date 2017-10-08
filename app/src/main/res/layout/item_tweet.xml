@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
@@ -7,8 +8,7 @@
             type="com.codepath.apps.simpletweetsfragment.models.Tweet"/>
     </data>
 
-    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:layout_margin="@dimen/layout_margin"
+    <RelativeLayout android:layout_margin="@dimen/layout_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -63,6 +63,31 @@
             android:maxLines="4"
             android:layout_toEndOf="@+id/ivProfileImage"
             android:text='@{tweet.body}'/>
+
+        <ImageView
+            android:id="@+id/ivReply"
+            android:layout_margin="@dimen/iv_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvBody"
+            android:layout_toEndOf="@id/ivProfileImage"
+            android:src="@drawable/ic_insert_comment_white_6dp"/>
+
+        <TextView
+            android:id="@+id/tvRetweets"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvBody"
+            android:layout_toEndOf="@id/ivReply"
+            android:text='@{tweet.reTweets == 0 ? "": tweet.reTweets + " Retweet   "}'/>
+
+        <TextView
+            android:id="@+id/tvLikes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvBody"
+            android:layout_toEndOf="@+id/tvRetweets"
+            android:text='@{tweet.likes == 0 ? "": tweet.likes + " Likes"}'/>
 
     </RelativeLayout>
 </layout>

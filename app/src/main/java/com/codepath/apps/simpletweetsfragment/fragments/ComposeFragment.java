@@ -20,6 +20,7 @@ import com.codepath.apps.simpletweetsfragment.databinding.FragmentComposeBinding
 import com.codepath.apps.simpletweetsfragment.models.Tweet;
 import com.codepath.apps.simpletweetsfragment.network.TwitterApp;
 import com.codepath.apps.simpletweetsfragment.network.TwitterClient;
+import com.codepath.apps.simpletweetsfragment.utils.Utils;
 import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -40,18 +41,28 @@ public class ComposeFragment extends DialogFragment implements TextView.OnEditor
     }
 
     private static final String LOG_TAG = ComposeFragment.class.getSimpleName();
-    FragmentComposeBinding binding;
+    private FragmentComposeBinding binding;
     private TwitterClient client;
+    private String id;
+    private String screenName;
     public ComposeFragment() {
 
     }
-    public static ComposeFragment newInstance() {
-
+    public static ComposeFragment newInstance(String id, String screenName) {
         Bundle args = new Bundle();
-
         ComposeFragment fragment = new ComposeFragment();
+        args.putString("id", id);
+        args.putString("screen_name", screenName);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        id = getArguments().getString("id");
+        screenName = getArguments().getString("screen_name");
+        Log.d(LOG_TAG, "id: " + id + "\tscreen_name: " + screenName);
     }
 
     @Nullable
@@ -74,6 +85,9 @@ public class ComposeFragment extends DialogFragment implements TextView.OnEditor
         binding.etTweet.requestFocus();
         binding.etTweet.setImeOptions(EditorInfo.IME_ACTION_SEND);
         binding.etTweet.setRawInputType(InputType.TYPE_CLASS_TEXT);
+        if (screenName != null) {
+            binding.etTweet.setText("@" + screenName + "\n");
+        }
         int position = binding.etTweet.length();
         binding.etTweet.setSelection(position);
         binding.etTweet.setOnEditorActionListener(this);
@@ -116,12 +130,13 @@ public class ComposeFragment extends DialogFragment implements TextView.OnEditor
 
                     }
                 };
-                client.postTweet(handler, binding.etTweet.getText().toString());
+                client.postTweet(handler, binding.etTweet.getText().toString(), id);
                 // Dismiss the fragment and its dialog.
                 dismiss();
             } else {
-                Log.d(LOG_TAG, "exceeding the mex characters");
+                Log.d(LOG_TAG, "exceeding the max characters");
                 // potentially I can add snackbar here
+                Utils.showToast(getContext(), "exceeding the max characters");
             }
         }
         return false;
