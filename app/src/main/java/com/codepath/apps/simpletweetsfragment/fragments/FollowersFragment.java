@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.codepath.apps.simpletweetsfragment.network.TwitterApp;
 import com.codepath.apps.simpletweetsfragment.network.TwitterClient;
+import com.codepath.apps.simpletweetsfragment.utils.Utils;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -67,6 +68,10 @@ public class FollowersFragment extends UsersListFragment {
                 Log.d(LOG_TAG, errorResponse.toString());
             }
         };
-        client.getFollowersList(handler, screenName, 0);
+        if (!Utils.isNetworkAvailable(getContext())) {
+            Utils.showToast(getContext(), "No internet connections");
+        } else {
+            client.getFollowersList(handler, screenName, 0);
+        }
     }
 }

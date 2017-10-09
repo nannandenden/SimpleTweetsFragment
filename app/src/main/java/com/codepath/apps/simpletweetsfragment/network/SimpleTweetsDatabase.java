@@ -5,10 +5,10 @@ import com.raizlabs.android.dbflow.annotation.Database;
 // on disk in the file named RestClientDatabase
 // DBFlow supports any number of database, however individual tables and other related files can
 // only be associated with one database
-@Database(name = MyDatabase.NAME, version = MyDatabase.VERSION)
-public class MyDatabase {
+@Database(name = SimpleTweetsDatabase.NAME, version = SimpleTweetsDatabase.VERSION)
+public class SimpleTweetsDatabase {
 
     public static final String NAME = "RestClientDatabase";
 
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 }

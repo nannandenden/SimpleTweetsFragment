@@ -1,6 +1,6 @@
 package com.codepath.apps.simpletweetsfragment.models;
 
-import com.codepath.apps.simpletweetsfragment.network.MyDatabase;
+import com.codepath.apps.simpletweetsfragment.network.SimpleTweetsDatabase;
 import com.codepath.apps.simpletweetsfragment.utils.Utils;
 import com.google.gson.annotations.SerializedName;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -14,8 +14,8 @@ import org.parceler.Parcel;
 /**
  * Created by nanden on 9/26/17.
  */
-@Parcel
-@Table(database = MyDatabase.class)
+@Parcel(analyze={Tweet.class})
+@Table(database = SimpleTweetsDatabase.class)
 public class Tweet extends BaseModel {
     private static final String LOG_TAG = Tweet.class.getSimpleName();
 

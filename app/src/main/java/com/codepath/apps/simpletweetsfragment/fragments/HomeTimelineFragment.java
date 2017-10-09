@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.codepath.apps.simpletweetsfragment.models.Tweet;
 import com.codepath.apps.simpletweetsfragment.network.TwitterApp;
@@ -45,31 +44,44 @@ public class HomeTimelineFragment extends TweetsListFragment {
     private void populateTimeline(long maxId) {
         showProgressBar();
         if (!Utils.isNetworkAvailable(getContext())) {
-            List<Tweet> tweetList = SQLite.select().from(Tweet.class).queryList();
-            if (tweetList.size()==0) {
-                Toast.makeText(getContext(), "No network available!", Toast.LENGTH_LONG).show();
-            } else {
-                //TODO if not network load from database and pass the data to fragment
-            }
-
+            Log.d(LOG_TAG, "No internet connection. Attempt to load from database");
+            populateFromDatabase("No internet...:(");
+            hideProgressBar();
         } else {
             client.getHomeTimeline(new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    // successfully getting the new data, delete the database before inserting
+                    // the new items
+                    deleteDatabaseTable();
+                    // add new items
                     addList(response);
                     hideProgressBar();
                 }
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    throwable.printStackTrace();
+                    Log.d(LOG_TAG, throwable.getMessage());
+                    populateFromDatabase(throwable.getMessage());
                     hideProgressBar();
                 }
             }, maxId);
         }
     }
 
+    // item will be load from database when there is network request error/user offline.
+    private void populateFromDatabase(String reasonMessage) {
+        List<Tweet> tweetList = SQLite.select().from(Tweet.class).queryList();
+        if (tweetList.size()==0) {
+            Utils.showToast(getContext(), reasonMessage);
+        } else {
+            addList(tweetList);
+        }
+    }
+
     @Override
     public void loadMorePage(long maxId) {
-        populateTimeline(maxId);
+        if (Utils.isNetworkAvailable(getContext())) {
+            populateTimeline(maxId);
+        }
     }
 }

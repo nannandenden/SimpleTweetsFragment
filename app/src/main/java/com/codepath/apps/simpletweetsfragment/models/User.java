@@ -1,6 +1,6 @@
 package com.codepath.apps.simpletweetsfragment.models;
 
-import com.codepath.apps.simpletweetsfragment.network.MyDatabase;
+import com.codepath.apps.simpletweetsfragment.network.SimpleTweetsDatabase;
 import com.google.gson.annotations.SerializedName;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -12,8 +12,8 @@ import org.parceler.Parcel;
 /**
  * Created by nanden on 9/26/17.
  */
-@Parcel
-@Table(database = MyDatabase.class)
+@Parcel(analyze={User.class})
+@Table(database = SimpleTweetsDatabase.class)
 public class User extends BaseModel {
 
     @Column

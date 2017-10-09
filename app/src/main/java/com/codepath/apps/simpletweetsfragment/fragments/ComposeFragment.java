@@ -35,9 +35,7 @@ import cz.msebera.android.httpclient.Header;
 public class ComposeFragment extends DialogFragment implements TextView.OnEditorActionListener {
     // define the interface for passing data back to activity
     public interface EditTweetDialogListener {
-
         void onFinishEditTweet(Tweet tweet);
-
     }
 
     private static final String LOG_TAG = ComposeFragment.class.getSimpleName();
@@ -130,12 +128,14 @@ public class ComposeFragment extends DialogFragment implements TextView.OnEditor
 
                     }
                 };
-                client.postTweet(handler, binding.etTweet.getText().toString(), id);
-                // Dismiss the fragment and its dialog.
-                dismiss();
+                if (!Utils.isNetworkAvailable(getContext())) {
+                    Utils.showToast(getContext(), "No internet available");
+                } else {
+                    client.postTweet(handler, binding.etTweet.getText().toString(), id);
+                    dismiss();
+                }
             } else {
                 Log.d(LOG_TAG, "exceeding the max characters");
-                // potentially I can add snackbar here
                 Utils.showToast(getContext(), "exceeding the max characters");
             }
         }
