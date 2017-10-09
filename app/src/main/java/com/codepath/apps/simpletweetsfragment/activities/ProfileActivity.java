@@ -59,6 +59,7 @@ public class ProfileActivity extends AppCompatActivity implements
         // setup data binding
         binding = DataBindingUtil.setContentView(this, R.layout.activity_profile);
         setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         tvFollowers = binding.tvFollowers;
         tvFollowing = binding.tvFollowing;
         tvFollowers.setOnClickListener(new View.OnClickListener() {

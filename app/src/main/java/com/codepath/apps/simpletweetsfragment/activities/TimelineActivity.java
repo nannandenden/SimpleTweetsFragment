@@ -129,6 +129,8 @@ public class TimelineActivity extends AppCompatActivity implements
     private void setView() {
         // get the view pager
         setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setIcon(R.drawable.ic_toys_black_24dp);
+        getSupportActionBar().setTitle(" Twitter Fragment");
         // attaching the viewpager to the tweetspageradapter
         pagerAdapter = new TweetsPagerAdapter(getSupportFragmentManager(), this);
         binding.viewPager.setAdapter(pagerAdapter);

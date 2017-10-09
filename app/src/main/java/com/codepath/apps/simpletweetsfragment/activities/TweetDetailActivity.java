@@ -25,6 +25,7 @@ public class TweetDetailActivity extends AppCompatActivity {
         toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Tweet");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 }

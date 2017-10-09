@@ -45,6 +45,7 @@ public class SearchResultActivity extends AppCompatActivity implements
         toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(hashTag);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // call fragment to display the result
         SearchResultTimeLineFragment fragment = SearchResultTimeLineFragment.newInstance(hashTag);

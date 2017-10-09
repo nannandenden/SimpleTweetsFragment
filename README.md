@@ -2,7 +2,7 @@
 
 SimpleTweetsFragment is an android app that allows a user to view home and mentions timelines, view user profiles with user timelines, as well as compose and post a new tweet. The app utilizes [Twitter REST API](https://developer.twitter.com/en/docs/api-reference-index).
 
-Time spent: **X** hours spent in total
+Time spent: 25 hours spent in total
 
 ## User Stories
 
@@ -55,7 +55,8 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Store all different timeline and query based on the timeline page was difficult to figure out. 
+Understood Fragments are very important concept and how useful they are 
 
 ## Open-source libraries used
 
