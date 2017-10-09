@@ -102,11 +102,11 @@ public class ProfileActivity extends AppCompatActivity implements
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d(LOG_TAG, errorResponse.toString());
+                Utils.showToast(ProfileActivity.this, "Request error: " + throwable.getMessage());
             }
         };
         if (!Utils.isNetworkAvailable(this)) {
-            Log.d(LOG_TAG, "no internet");
+            Utils.showToast(this, "No internet connections");
         } else {
             client.getUserInfo(handler);
         }

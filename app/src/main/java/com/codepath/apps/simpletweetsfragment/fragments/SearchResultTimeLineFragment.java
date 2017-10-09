@@ -49,6 +49,7 @@ public class SearchResultTimeLineFragment extends TweetsListFragment {
     private void populateTimeLine(long maxId) {
         showProgressBar();
         if (!Utils.isNetworkAvailable(getContext())) {
+            hideProgressBar();
             Utils.showToast(getContext(), "No internet connection");
         } else {
             JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {

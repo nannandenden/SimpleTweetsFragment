@@ -3,6 +3,7 @@ package com.codepath.apps.simpletweetsfragment.fragments;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,14 +15,21 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.codepath.apps.simpletweetsfragment.R;
-import com.codepath.apps.simpletweetsfragment.utils.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.simpletweetsfragment.adapter.TweetAdapter;
 import com.codepath.apps.simpletweetsfragment.databinding.FragmentsTweetsListBinding;
 import com.codepath.apps.simpletweetsfragment.models.Tweet;
-import com.codepath.apps.simpletweetsfragment.network.TweetDeserializer;
 import com.codepath.apps.simpletweetsfragment.models.User;
+import com.codepath.apps.simpletweetsfragment.network.SimpleTweetsDatabase;
+import com.codepath.apps.simpletweetsfragment.network.TweetDeserializer;
+import com.codepath.apps.simpletweetsfragment.utils.EndlessRecyclerViewScrollListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.raizlabs.android.dbflow.config.DatabaseDefinition;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
+import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -118,6 +126,8 @@ public abstract class TweetsListFragment extends Fragment implements
                 e.printStackTrace();
             }
         }
+        // bulk saving to database
+        saveToDataBase(tweetList);
         addList(tweetList);
     }
 
@@ -134,6 +144,8 @@ public abstract class TweetsListFragment extends Fragment implements
         tweets.add(0, tweet);
         tweetAdapter.notifyItemInserted(0);
         rvTweets.scrollToPosition(0);
+        // save to database. if it's a single value, it's okay to save it synchronously
+        tweet.save();
     }
 
     public void showProgressBar() {
@@ -142,6 +154,11 @@ public abstract class TweetsListFragment extends Fragment implements
 
     public void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
+    }
+
+    public void deleteDatabaseTable() {
+        // Delete multiple instantly
+        Delete.tables(Tweet.class, User.class);
     }
 
     // fire the event to pass the screenName to the activity when the user selects the profile
@@ -177,4 +194,51 @@ public abstract class TweetsListFragment extends Fragment implements
     }
 
     public abstract void loadMorePage(long maxId);
+
+    // you keep saving the data, mentioned, clicked.... to different database...?
+    // then you load from the database once it's loaded...?
+    // async transaction: saving the data in bulk for offline support
+    private void saveToDataBase(List<Tweet> tweets) {
+
+        // instantiate ProcessModelTransaction
+        ProcessModelTransaction<Tweet> processModelTransaction = new ProcessModelTransaction
+                .Builder<>(new ProcessModelTransaction.ProcessModel<Tweet>() {
+            @Override
+            public void processModel(Tweet tweet, DatabaseWrapper wrapper) {
+                // saving to database
+                tweet.save();
+            }
+        }).processListener(new ProcessModelTransaction.OnModelProcessListener<Tweet>() {
+            @Override
+            public void onModelProcessed(long current, long total, Tweet modifiedModel) {
+
+            }
+        }).addAll(tweets).build();
+
+        // DatabaseDefinition: The main interface that all Database implementations extend from.
+        DatabaseDefinition database = FlowManager.getDatabase(SimpleTweetsDatabase.class);
+        // Transaction represents a transaction that occurs in the database. This is a handy
+        // class that allows you to wrap up a set of database modification (or queries) int a
+        // code block that gets accessed all on the same thread, in the same queue.(prevent
+        // locking and synchronization issue for writing/reading at the same time)
+        Transaction transaction = database.beginTransactionAsync(processModelTransaction)
+                .success(new Transaction.Success() {
+                    @Override
+                    public void onSuccess(@NonNull Transaction transaction) {
+                        Log.d(LOG_TAG, "transaction success!");
+                    }
+                })
+                .error(new Transaction.Error() {
+                    @Override
+                    public void onError(@NonNull Transaction transaction, @NonNull Throwable error) {
+                        Log.d(LOG_TAG, "transaction error: " + error.getMessage());
+
+                    }
+                })
+                .build();
+
+        transaction.execute();
+    }
+
+
 }

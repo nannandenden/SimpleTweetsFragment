@@ -4,19 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
-import com.codepath.apps.simpletweetsfragment.models.Tweet;
 import com.codepath.apps.simpletweetsfragment.network.TwitterApp;
 import com.codepath.apps.simpletweetsfragment.network.TwitterClient;
 import com.codepath.apps.simpletweetsfragment.utils.Utils;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -44,13 +39,8 @@ public class MentionTimelineFragment extends TweetsListFragment {
     private void populateTimeline(long maxId) {
         showProgressBar();
         if (!Utils.isNetworkAvailable(getContext())) {
-            List<Tweet> tweetList = SQLite.select().from(Tweet.class).queryList();
-            if (tweetList.size()==0) {
-                Toast.makeText(getContext(), "No network available!", Toast.LENGTH_LONG).show();
-            } else {
-                //TODO if not network load from database and pass the data to fragment
-//                tweetsListFragment.addList(tweetList);
-            }
+            Utils.showToast(getContext(), "No internet....:(");
+            hideProgressBar();
 
         } else {
             client.getMentionTimeline(new JsonHttpResponseHandler() {
@@ -58,11 +48,8 @@ public class MentionTimelineFragment extends TweetsListFragment {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                     Log.d(LOG_TAG, "json array response. response: " + response.toString());
-
                     addList(response);
                     hideProgressBar();
-//                    saveToDataBase(tweets);
-
                 }
 
                 @Override

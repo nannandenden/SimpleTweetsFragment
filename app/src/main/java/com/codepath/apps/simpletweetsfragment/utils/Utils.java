@@ -45,6 +45,9 @@ public class Utils {
         return relativeDate;
     }
 
+    /**
+     * Check internet connections
+     */
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager cm =
                 (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -54,6 +57,14 @@ public class Utils {
                 activeNetwork.isConnectedOrConnecting();
     }
 
+    /**
+     * Toast message
+     */
+    public static void showToast(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    // for data binding
     public static class BindingAdapterUtils {
         @BindingAdapter({"bind:imageUrl"})
         public static void loadImage(ImageView imageView, String url) {
@@ -70,9 +81,5 @@ public class Utils {
                         .into(imageView);
             }
         }
-    }
-
-    public static void showToast(Context context, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 }
